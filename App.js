@@ -7,74 +7,34 @@
  */
 
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  StatusBar,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import Companies from './src/screens/Companies';
-import {Header} from './src/components/Header/Header';
+import {Text} from 'react-native';
+import { NavigationContainer, StackActions } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-export default class App extends React.Component {
-  render() {
+import {Home} from './src/screens/Home';
+import {Timeline} from './src/screens/Timeline';
+import {Reports} from './src/screens/Reports';
+import {Intelligence} from './src/screens/Intelligence';
+import {Objectives} from './src/screens/Objectives'
+import {Companies} from './src/screens/Companies';
+import {Sales} from './src/screens/Sales';
+
+const Stack = createStackNavigator();
+
+export default function App(){
     return (
-      <>
-        <StatusBar barStyle="dark-content" />
-        <SafeAreaView>
-          <ScrollView
-            contentInsetAdjustmentBehavior="automatic"
-            style={styles.scrollView}>
-            <View style={styles.body}>
-              <Header />
-              <View style={styles.sectionContainer}>
-                <Companies />
-              </View>
-            </View>
-          </ScrollView>
-        </SafeAreaView>
-      </>
+      <NavigationContainer>
+        <StackActions.Navigator initialRouteName="Home">
+          <Stack.Screen name = "Home" component={Home} />
+          <Stack.Screen name = "Timeline" component={Timeline} />
+          <Stack.Screen name = "Reports" component={Reports} />
+          <Stack.Screen name = "Intelligence" component={Intelligence}/>
+          <Stack.Screen name = "Objectives" component={Objectives}/>
+          <Stack.Screen name = "Companies" component={Companies}/>
+          <Stack.Screen name = "Sales" component={Sales}/>
+        </StackActions.Navigator>
+      </NavigationContainer>
     );
-  }
 }
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
+
