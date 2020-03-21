@@ -10,27 +10,27 @@ import {
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Header from '../components/Header/Header';
 
-export default class Home extends React.Component {
-  render() {
-    return (
-      <>
-        <StatusBar barStyle="dark-content" />
-        <SafeAreaView>
-          <ScrollView
-            contentInsetAdjustmentBehavior="automatic"
-            style={styles.scrollView}>
-            <View style={styles.body}>
-              <Header />
-              <View style={styles.sectionContainer}>
-                <Text>Home</Text>
-              </View>
+function HomeScreen({navigation}) {
+  return (
+    <>
+      <StatusBar barStyle="dark-content" />
+      <SafeAreaView>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={styles.scrollView}>
+          <View style={styles.body}>
+            <Header />
+            <View style={styles.sectionContainer}>
+              <Text>Home</Text>
             </View>
-          </ScrollView>
-        </SafeAreaView>
-      </>
-    );
-  }
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </>
+  );
 }
+
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   scrollView: {
