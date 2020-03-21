@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {View, Image, ScrollView} from 'react-native';
-import {IconButtonWithText} from '../IconButtonWithText/IconButtonWithText';
+import IconButtonWithText from '../IconButtonWithText/IconButtonWithText';
 import styles from './styles';
-export class Header extends Component {
+export default class Header extends Component {
   render() {
     return (
       <View style={styles.container}>
