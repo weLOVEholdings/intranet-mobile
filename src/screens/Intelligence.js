@@ -5,14 +5,14 @@ import {
   StatusBar,
   SafeAreaView,
   ScrollView,
-  Text
+  Text,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {Header} from '../components/Header/Header';
+import Header from '../components/Header/Header';
 
-export default class Intelligence extends React.Component{
-  render(){
-    return(
+export default class Intelligence extends React.Component {
+  render() {
+    return (
       <>
         <StatusBar barStyle="dark-content" />
         <SafeAreaView>
@@ -27,7 +27,7 @@ export default class Intelligence extends React.Component{
             </View>
           </ScrollView>
         </SafeAreaView>
-      </>  
+      </>
     );
   }
 }
