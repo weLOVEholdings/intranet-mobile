@@ -1,35 +1,61 @@
 import React from 'react';
 import {
-  View,
+  FlatList,
+  Image,
   StyleSheet,
   StatusBar,
   SafeAreaView,
   ScrollView,
   Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Header from '../components/Header/Header';
+import {CompaniesList} from '../store/Companies';
+import {globalStyles} from '../styles/global';
 
-export default class Companies extends React.Component {
-  render() {
-    return (
-      <>
-        <StatusBar barStyle="dark-content" />
-        <SafeAreaView>
-          <ScrollView
-            contentInsetAdjustmentBehavior="automatic"
-            style={styles.scrollView}>
-            <View style={styles.body}>
-              <Header />
-              <View style={styles.sectionContainer}>
-                <Text>Companies</Text>
-              </View>
+export default function Companies() {
+  return (
+    <>
+      <StatusBar barStyle="dark-content" />
+      <SafeAreaView>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={styles.scrollView}>
+          <View style={styles.body}>
+            <Header />
+            <View style={globalStyles.container}>
+              <FlatList
+                data={CompaniesList}
+                renderItem={({item}) => (
+                  <View style={[globalStyles.card, globalStyles.container]}>
+                    <View
+                      style={[
+                        globalStyles.titleContainer,
+                        {backgroundColor: item.color},
+                      ]}>
+                      <Text style={globalStyles.companyTitle}>{item.name}</Text>
+                    </View>
+                    <View>
+                      <TouchableOpacity>
+                        <Image
+                          style={globalStyles.image}
+                          source={{
+                            uri: item.image,
+                          }}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+              />
             </View>
-          </ScrollView>
-        </SafeAreaView>
-      </>
-    );
-  }
+          </View>
+      </ScrollView>
+      </SafeAreaView>
+    </>
+  );
 }
 
 const styles = StyleSheet.create({
