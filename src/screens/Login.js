@@ -7,7 +7,6 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import HeaderImage from '../shared/weLoveImage';
@@ -114,7 +113,7 @@ export default function Login({navigation}) {
                   </Text>
                 </View>
                 <View style={globalStyles.formItemContainer}>
-                  <FlatButton onPress={props.handleSubmit} />
+                  <FlatButton onPress={props.handleSubmit} text="Login" />
                 </View>
               </View>
             )}

@@ -10,16 +10,12 @@ import {
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Header from '../components/Header/Header';
 import Login from './Login';
-//import AsyncStorage from '@react-native-community/async-storage';
 import {_retrieveData} from '../utils/storage';
 
 function HomeScreen() {
   let token = _retrieveData('token');
-  console.log('token: ' + token);
 
   if (token) {
-    let user = _retrieveData('user');
-    console.warn(user);
     return (
       <>
         <StatusBar barStyle="dark-content" />
@@ -31,7 +27,6 @@ function HomeScreen() {
               <Header />
               <View style={styles.sectionContainer}>
                 <Text>Home</Text>
-                <Text>Hi! {user.name}</Text>
               </View>
             </View>
           </ScrollView>
