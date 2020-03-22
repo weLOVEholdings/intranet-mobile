@@ -7,7 +7,6 @@ export const globalStyles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
     color: 'white',
   },
   card: {
@@ -29,5 +28,30 @@ export const globalStyles = StyleSheet.create({
     width: 162,
     height: 80,
     resizeMode: 'contain',
+  },
+  formContainer: {
+    width: '80%',
+    justifyContent: 'center',
+  },
+  formItemContainer: {
+    marginBottom: 24,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ced4da',
+    borderRadius: 4,
+    lineHeight: 28,
+    padding: 6,
+    marginTop: 12,
+    height: 32,
+    paddingHorizontal: 8,
+  },
+  inputLabel: {
+    fontWeight: 'bold',
+  },
+  errorText: {
+    color: 'crimson',
+    marginBottom: 10,
+    marginTop: 6,
   },
 });

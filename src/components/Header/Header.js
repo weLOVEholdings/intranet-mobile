@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Image, ScrollView} from 'react-native';
 import IconButtonWithText from '../IconButtonWithText/IconButtonWithText';
 import styles from './styles';
-function Header({navigation}) {
+function Header() {
   return (
     <View style={styles.container}>
       <Image
@@ -20,7 +20,7 @@ function Header({navigation}) {
         />
         <IconButtonWithText
           navigationItemIcon="file"
-          navigationItemTitle="Report"
+          navigationItemTitle="Reports"
         />
         <IconButtonWithText
           navigationItemIcon="brain"
@@ -28,15 +28,15 @@ function Header({navigation}) {
         />
         <IconButtonWithText
           navigationItemIcon="bullseye"
-          navigationItemTitle="Objective"
+          navigationItemTitle="Objectives"
         />
         <IconButtonWithText
           navigationItemIcon="building"
-          navigationItemTitle="Company"
+          navigationItemTitle="Companies"
         />
         <IconButtonWithText
           navigationItemIcon="shopping-cart"
-          navigationItemTitle="Sale"
+          navigationItemTitle="Sales"
         />
       </ScrollView>
     </View>
