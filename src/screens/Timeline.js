@@ -12,6 +12,7 @@ import Moment from 'moment';
 import HTML from 'react-native-render-html';
 import Header from '../components/Header/Header';
 import {_retrieveData} from '../utils/storage';
+import {_reportDate} from '../utils/dateSetter';
 import {globalStyles} from '../styles/global';
 
 export default class TimeLine extends React.Component {
@@ -85,12 +86,6 @@ export default class TimeLine extends React.Component {
       });
   }
 
-  dateFormatter = date => {
-    let mdy = Moment(date).format('MM/DD/YYYY');
-    let tme = Moment(date).format('h:mm A');
-    return mdy + ' @ ' + tme;
-  };
-
   typeFormatter = type => {
     if (type === 'dayplan') {
       return 'DAY PLAN';
@@ -143,7 +138,7 @@ export default class TimeLine extends React.Component {
                           </View>
                           <View style={globalStyles.timelineHeaderContainer}>
                             <Text style={globalStyles.boldText}>
-                              {this.dateFormatter(item.date)}
+                              {_reportDate(item.date)}
                             </Text>
                           </View>
                         </View>
