@@ -12,29 +12,43 @@ import Header from '../components/Header/Header';
 import Login from './Login';
 import {_retrieveData} from '../utils/storage';
 
-function HomeScreen() {
-  let token = _retrieveData('token');
+class HomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: {},
+      token: '',
+    };
+  }
 
-  if (token) {
-    return (
-      <>
-        <StatusBar barStyle="dark-content" />
-        <SafeAreaView>
-          <ScrollView
-            contentInsetAdjustmentBehavior="automatic"
-            style={styles.scrollView}>
-            <View style={styles.body}>
-              <Header />
-              <View style={styles.sectionContainer}>
-                <Text>Home</Text>
+  componentDidMount() {
+    _retrieveData('user').then(user => this.setState({user: user}));
+    _retrieveData('token').then(token => this.setState({token: token}));
+  }
+
+  render() {
+    if (this.state.token) {
+      return (
+        <>
+          <StatusBar barStyle="dark-content" />
+          <SafeAreaView>
+            <ScrollView
+              contentInsetAdjustmentBehavior="automatic"
+              style={styles.scrollView}>
+              <View style={styles.body}>
+                <Header />
+                <View style={styles.sectionContainer}>
+                  <Text>Home</Text>
+                  <Text>Welcome {this.state.user.name}</Text>
+                </View>
               </View>
-            </View>
-          </ScrollView>
-        </SafeAreaView>
-      </>
-    );
-  } else {
-    return <Login />;
+            </ScrollView>
+          </SafeAreaView>
+        </>
+      );
+    } else {
+      return <Login />;
+    }
   }
 }
 

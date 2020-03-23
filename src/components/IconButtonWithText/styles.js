@@ -4,8 +4,8 @@ export default StyleSheet.create({
   grayCircle: {
     borderRadius: 100,
     backgroundColor: '#e6e6e6',
-    width: 65,
-    height: 65,
+    width: 60,
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -16,7 +16,9 @@ export default StyleSheet.create({
   },
 
   navigationButtonText: {
-    width: 65,
+    width: 75,
+    fontWeight: 'bold',
+    color: '#6d6d6d',
     textAlign: 'center',
   },
 
