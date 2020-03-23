@@ -38,8 +38,21 @@ class HomeScreen extends React.Component {
               <View style={styles.body}>
                 <Header />
                 <View style={styles.sectionContainer}>
-                  <Text>Home</Text>
-                  <Text>Welcome {this.state.user.name}</Text>
+                  <View style={styles.main}>
+                    <Text>Day OverView</Text>
+                    <View style={styles.userpart}>
+                      <Text>Hello, {this.state.user.name}</Text>
+                    </View>
+                    <View style={styles.weeklypart}>
+                      <Text>Weekly Goals</Text>
+                    </View>
+                    <View style={styles.daypart}>
+                      <Text>Day Plans</Text>
+                    </View>
+                    <View style={styles.eodpart}>
+                      <Text>End of the day</Text>
+                    </View>
+                  </View>
                 </View>
               </View>
             </ScrollView>
