@@ -137,5 +137,5 @@ export const globalStyles = StyleSheet.create({
   },
   boldText: {
     fontWeight: 'bold',
-  }
+  },
 });

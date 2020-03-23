@@ -20,7 +20,7 @@ export const _retrieveData = async key => {
   try {
     const value = await AsyncStorage.getItem(key);
     if (value !== null) {
-      if (typeof value === 'string') {
+      if (key !== 'user') {
         return value;
       } else {
         const item = JSON.parse(value);

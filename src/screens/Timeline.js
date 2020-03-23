@@ -20,6 +20,7 @@ export default class TimeLine extends React.Component {
     this.state = {
       users: [],
       reports: [],
+      token: '',
     };
   }
 
@@ -30,6 +31,7 @@ export default class TimeLine extends React.Component {
     let reportUrl = baseUrl + '/reports/id/';
     let userId;
 
+    _retrieveData('token').then(token => this.setState({token: token}));
     fetch(baseUrl + timelineUrl)
       .then(response => response.json())
       .then(responseJson => {
@@ -54,7 +56,7 @@ export default class TimeLine extends React.Component {
 
                 fetch(reportUrl + report.modelId, {
                   headers: {
-                    'x-access-token': _retrieveData('token'),
+                    'x-access-token': this.state.token,
                   },
                 })
                   .then(response => response.json())
@@ -129,14 +131,20 @@ export default class TimeLine extends React.Component {
                         <View style={globalStyles.timelineUserDetails}>
                           <View style={globalStyles.timelineHeaderContainer}>
                             <View style={globalStyles.timelineTwoColumn}>
-                              <Text style={globalStyles.boldText}>{item.user.name}</Text>
+                              <Text style={globalStyles.boldText}>
+                                {item.user.name}
+                              </Text>
                             </View>
                             <View style={globalStyles.reportTypeContainer}>
-                              <Text style={globalStyles.boldText}>{item.report ? this.typeFormatter(item.report.type) : null}</Text>
+                              <Text style={globalStyles.boldText}>
+                                {item.report ? this.typeFormatter(item.report.type) : null}
+                              </Text>
                             </View>
                           </View>
                           <View style={globalStyles.timelineHeaderContainer}>
-                            <Text style={globalStyles.boldText}>{this.dateFormatter(item.date)}</Text>
+                            <Text style={globalStyles.boldText}>
+                              {this.dateFormatter(item.date)}
+                            </Text>
                           </View>
                         </View>
                       </View>
