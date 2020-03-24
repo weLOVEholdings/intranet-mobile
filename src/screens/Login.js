@@ -73,7 +73,7 @@ export default function Login({navigation}) {
     return (
       <View style={globalStyles.container}>
         <HeaderImage />
-        <ActivityIndicator size="large" color="#0000ff" animating />
+        <ActivityIndicator size="large" color="#e6e6e6" animating />
       </View>
     );
   } else {

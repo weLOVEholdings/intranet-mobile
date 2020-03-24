@@ -18,7 +18,7 @@ import {globalStyles} from '../styles/global';
 export default function Companies() {
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar backgroundColor="transparent" />
       <SafeAreaView>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"

@@ -14,7 +14,7 @@ export default class Intelligence extends React.Component {
   render() {
     return (
       <>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar backgroundColor="transparent" />
         <SafeAreaView>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"

@@ -5,40 +5,42 @@ import styles from './styles';
 function Header() {
   return (
     <View style={styles.container}>
-      <Image
-        style={styles.logo_icon}
-        source={require('../../assets/images/welove.png')}
-      />
-      <ScrollView horizontal={true}>
-        <IconButtonWithText
-          navigationItemIcon="home"
-          navigationItemTitle="Home"
+      <View style={styles.headerContainer}>
+        <Image
+          style={styles.logo_icon}
+          source={require('../../assets/images/welove.png')}
         />
-        <IconButtonWithText
-          navigationItemIcon="newspaper"
-          navigationItemTitle="Timeline"
-        />
-        <IconButtonWithText
-          navigationItemIcon="file"
-          navigationItemTitle="Reports"
-        />
-        <IconButtonWithText
-          navigationItemIcon="brain"
-          navigationItemTitle="Intelligence"
-        />
-        <IconButtonWithText
-          navigationItemIcon="bullseye"
-          navigationItemTitle="Objectives"
-        />
-        <IconButtonWithText
-          navigationItemIcon="building"
-          navigationItemTitle="Companies"
-        />
-        <IconButtonWithText
-          navigationItemIcon="shopping-cart"
-          navigationItemTitle="Sales"
-        />
-      </ScrollView>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <IconButtonWithText
+            navigationItemIcon="home"
+            navigationItemTitle="Home"
+          />
+          <IconButtonWithText
+            navigationItemIcon="newspaper"
+            navigationItemTitle="Timeline"
+          />
+          <IconButtonWithText
+            navigationItemIcon="file"
+            navigationItemTitle="Reports"
+          />
+          <IconButtonWithText
+            navigationItemIcon="brain"
+            navigationItemTitle="Intelligence"
+          />
+          <IconButtonWithText
+            navigationItemIcon="bullseye"
+            navigationItemTitle="Objectives"
+          />
+          <IconButtonWithText
+            navigationItemIcon="building"
+            navigationItemTitle="Companies"
+          />
+          <IconButtonWithText
+            navigationItemIcon="shopping-cart"
+            navigationItemTitle="Sales"
+          />
+        </ScrollView>
+      </View>
     </View>
   );
 }

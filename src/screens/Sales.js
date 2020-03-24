@@ -14,7 +14,7 @@ export default class Sales extends React.Component {
   render() {
     return (
       <>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar backgroundColor="transparent" />
         <SafeAreaView>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"

@@ -12,7 +12,8 @@ export default StyleSheet.create({
 
   navigationButton: {
     flex: 1,
-    flexDirection: 'row',
+    //flexDirection: 'row',
+    alignItems: 'center',
   },
 
   navigationButtonText: {

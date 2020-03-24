@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  ActivityIndicator,
   View,
   FlatList,
   Image,
@@ -8,7 +9,6 @@ import {
   ScrollView,
   Text,
 } from 'react-native';
-import Moment from 'moment';
 import HTML from 'react-native-render-html';
 import Header from '../components/Header/Header';
 import {_retrieveData} from '../utils/storage';
@@ -22,6 +22,7 @@ export default class TimeLine extends React.Component {
       users: [],
       reports: [],
       token: '',
+      isLoading: false,
     };
   }
 
@@ -32,7 +33,9 @@ export default class TimeLine extends React.Component {
     let reportUrl = baseUrl + '/reports/id/';
     let userId;
 
-    _retrieveData('token').then(token => this.setState({token: token}));
+    _retrieveData('token').then(token =>
+      this.setState({token: token, isLoading: true}),
+    );
     fetch(baseUrl + timelineUrl)
       .then(response => response.json())
       .then(responseJson => {
@@ -71,6 +74,7 @@ export default class TimeLine extends React.Component {
                       };
                       this.setState(prevState => ({
                         reports: [...prevState.reports, reportItem],
+                        isLoading: false,
                       }));
                     }
                   })
@@ -98,10 +102,9 @@ export default class TimeLine extends React.Component {
 
   render() {
     let {reports} = this.state;
-
     return (
       <>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar backgroundColor="transparent" />
         <SafeAreaView>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
@@ -109,46 +112,64 @@ export default class TimeLine extends React.Component {
             <View style={globalStyles.body}>
               <Header />
               <View style={globalStyles.sectionContainer}>
-                <FlatList
-                  data={reports}
-                  keyExtractor={item => item.id}
-                  renderItem={({item}) => (
-                    <View>
-                      <View style={globalStyles.timelineHeaderContainer}>
-                        <View style={globalStyles.timelineItemImg}>
-                          <Image
-                            style={globalStyles.imageRound}
-                            source={{
-                              uri: item.user.picture,
-                            }}
-                          />
-                        </View>
-                        <View style={globalStyles.timelineUserDetails}>
-                          <View style={globalStyles.timelineHeaderContainer}>
-                            <View style={globalStyles.timelineTwoColumn}>
-                              <Text style={globalStyles.boldText}>
-                                {item.user.name}
-                              </Text>
+                {this.state.isLoading ? (
+                  <View style={globalStyles.container}>
+                    <ActivityIndicator size="large" color="#e6e6e6" animating />
+                    <Text>Loading timeline...</Text>
+                  </View>
+                ) : (
+                  <FlatList
+                    data={reports}
+                    keyExtractor={item => item.id}
+                    renderItem={({item}) => (
+                      <View>
+                        <View style={globalStyles.timelineHeaderContainer}>
+                          <View style={globalStyles.timelineItemImg}>
+                            {item.user.picture ? (
+                              <Image
+                                style={globalStyles.imageRound}
+                                source={{
+                                  uri: item.user.picture,
+                                }}
+                              />
+                            ) : (
+                              <Image
+                                style={globalStyles.imageRound}
+                                source={require('../assets/images/unknown.jpg')}
+                              />
+                            )}
+                          </View>
+                          <View style={globalStyles.timelineUserDetails}>
+                            <View style={globalStyles.timelineHeaderContainer}>
+                              <View style={globalStyles.timelineTwoColumn}>
+                                <Text style={globalStyles.boldText}>
+                                  {item.user.name}
+                                </Text>
+                              </View>
+                              <View style={globalStyles.reportTypeContainer}>
+                                <Text style={globalStyles.boldText}>
+                                  {item.report
+                                    ? this.typeFormatter(item.report.type)
+                                    : null}
+                                </Text>
+                              </View>
                             </View>
-                            <View style={globalStyles.reportTypeContainer}>
+                            <View style={globalStyles.timelineHeaderContainer}>
                               <Text style={globalStyles.boldText}>
-                                {item.report ? this.typeFormatter(item.report.type) : null}
+                                {_reportDate(item.date)}
                               </Text>
                             </View>
                           </View>
-                          <View style={globalStyles.timelineHeaderContainer}>
-                            <Text style={globalStyles.boldText}>
-                              {_reportDate(item.date)}
-                            </Text>
-                          </View>
+                        </View>
+                        <View style={globalStyles.timelineCard}>
+                          {item.report ? (
+                            <HTML html={item.report.text} />
+                          ) : null}
                         </View>
                       </View>
-                      <View style={globalStyles.timelineCard}>
-                        {item.report ? <HTML html={item.report.text} /> : null}
-                      </View>
-                    </View>
-                  )}
-                />
+                    )}
+                  />
+                )}
               </View>
             </View>
           </ScrollView>

@@ -72,7 +72,7 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   sectionContainer: {
-    marginTop: 32,
+    marginTop: 64,
     paddingHorizontal: 24,
   },
   sectionTitle: {

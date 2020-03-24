@@ -30,7 +30,7 @@ class HomeScreen extends React.Component {
     if (this.state.token) {
       return (
         <>
-          <StatusBar barStyle="dark-content" />
+          <StatusBar backgroundColor="transparent" />
           <SafeAreaView>
             <ScrollView
               contentInsetAdjustmentBehavior="automatic"
