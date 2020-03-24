@@ -1,6 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, Modal, Alert} from 'react-native';
+import {
+  Alert,
+  View,
+  StyleSheet,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  Modal,
+  KeyboardAvoidingView,
+} from 'react-native';
 import {RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -8,6 +17,27 @@ import {globalStyles} from '../../styles/global';
 
 export default function DayPlan({openModal, closeModal, reportDialogShow}) {
   const [reportDetails, setreportDetails] = useState('');
+
+  const save = async () => {
+    // Get the data here and call the interface to save the data
+    let html = await this.richText.getContentHtml();
+    // console.log(html);
+    Alert.alert(html);
+  };
+
+  const onPressAddImage = () => {
+    // insert URL
+    this.richText.insertImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1024px-React-icon.svg.png',
+    );
+    // insert base64
+    // this.richText.insertImage(`data:${image.mime};base64,${image.data}`);
+    this.richText.blurContentEditor();
+  };
+
+  // const onHome = () => {
+  //   this.props.navigation.push('index');
+  // };
 
   return (
     <Modal
@@ -42,12 +72,23 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
             <Text style={globalStyles.dialogTitle}>Day Plan</Text>
           </View>
           <View style={globalStyles.dialogFormContainer}>
-          <RichToolbar getEditor={() => this.richtext}/>
-          <RichEditor
-            ref={(r) => this.richtext = r}
-            initialContentHTML={'Hello <b>World</b> <p>this is a new paragraph</p> <p>this is another new paragraph</p>'}
-            editorInitializedCallback={() => this.onEditorInitialized()}
-            />
+            <ScrollView style={styles.scroll}>
+              <RichEditor
+                ref={rf => that.richText = rf}
+                initialContentHTML={initHTML}
+                style={styles.rich}
+              />
+            </ScrollView>
+            <KeyboardAvoidingView behavior={'padding'} >
+              <RichToolbar
+                style={styles.richBar}
+                getEditor={() => that.richText}
+                iconTint={'#000033'}
+                selectedIconTint={'#2095F2'}
+                selectedButtonStyle={{backgroundColor: "transparent"}}
+                onPressAddImage={that.onPressAddImage}
+              />
+            </KeyboardAvoidingView>
           </View>
         </View>
       </View>
