@@ -18,6 +18,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {TextInput} from 'react-native-gesture-handler';
 import {_retrieveData} from '../utils/storage';
 import {_currentDate} from '../utils/dateSetter';
+import Dayplan from '../components/Modals/Dayplan';
 
 export default class Reports extends React.Component {
   constructor(props) {
@@ -27,6 +28,7 @@ export default class Reports extends React.Component {
       reportDialog: false,
       user: {},
       token: '',
+      openModalDayplan: false,
     };
   }
 
@@ -43,11 +45,9 @@ export default class Reports extends React.Component {
     this.setState({reportDialog: visible});
   };
 
-  // currentDateSetter = () => {
-  //   let mdy = Moment(date).format('MM/DD/YYYY');
-  //   let tme = Moment(date).format('h:mm A');
-  //   return mdy + ' @ ' + tme;
-  // };
+  setModalDayplan = open => {
+    this.setState({openModalDayplan: open});
+  };
 
   render() {
     return (
@@ -96,6 +96,7 @@ export default class Reports extends React.Component {
                             alignItems: 'center',
                             justifyContent: 'center',
                             transparent: 'true',
+                            width: '100%',
                           }}>
                           <View style={styles.dialogContainer}>
                             <View style={styles.dialogClose}>
@@ -137,7 +138,8 @@ export default class Reports extends React.Component {
                                   </Text>
                                 </View>
                               </TouchableOpacity>
-                              <TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() => this.setModalDayplan(true)}>
                                 <View style={styles.cardView}>
                                   <Text style={{fontSize: 18}}>Day Plan</Text>
                                   <Text style={{fontSize: 10}}>
@@ -145,6 +147,11 @@ export default class Reports extends React.Component {
                                   </Text>
                                 </View>
                               </TouchableOpacity>
+                              <Dayplan
+                                openModal={this.state.openModalDayplan}
+                                closeModal={this.setModalDayplan}
+                                reportDialogShow={this.reportDialogShow}
+                              />
                             </View>
                           </View>
                         </View>
@@ -413,6 +420,7 @@ const styles = StyleSheet.create({
   },
   reportDialogContent: {
     alignItems: 'center',
+    width: '100%',
   },
   cardView: {
     alignItems: 'center',

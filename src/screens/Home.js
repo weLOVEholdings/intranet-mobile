@@ -8,6 +8,7 @@ import {
   Text,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import Moment from 'moment';
 import Header from '../components/Header/Header';
 import Login from './Login';
 import {_retrieveData} from '../utils/storage';
@@ -19,6 +20,9 @@ class HomeScreen extends React.Component {
     this.state = {
       user: {},
       token: '',
+      dayplan: [],
+      eodplan: [],
+      weeklyObljectives: [],
     };
   }
 
@@ -27,8 +31,98 @@ class HomeScreen extends React.Component {
   }
 
   componentDidMount() {
+    let baseUrl = 'https://welove-intranet-backend.herokuapp.com';
+    let userUrl = baseUrl + '/contas/id/';
+    let reportUrl = baseUrl + '/reports/id/';
+    let userId;
     _retrieveData('user').then(user => this.setState({user: user}));
     _retrieveData('token').then(token => this.setState({token: token}));
+
+    fetch(baseUrl + '/timelineentry/all')
+      .then(response => response.json())
+      .then(responseJson => {
+        let day = [];
+        let eod = [];
+
+        day = responseJson.data.filter(
+          a => Moment(a.createdAt).startOf('day') - Moment().startOf('day') === 0 && a.type === 'dayplan'
+        );
+
+        eod = responseJson.data.filter(
+          a => Moment(a.createdAt).startOf('day') - Moment().startOf('day') === 0 && a.type === 'eod',
+        );
+
+        console.log('day: ' + JSON.stringify(day));
+        console.log('eod: ' + JSON.stringify(eod));
+
+        day.map(report => {
+          fetch(userUrl + report.userId)
+            .then(response => response.json())
+            .then(responseJsonUser => {
+              if (responseJsonUser.success === true) {
+                let user = responseJsonUser.data;
+                userId = user._id;
+
+                fetch(reportUrl + report.modelId, {
+                  headers: {
+                    'x-access-token': this.state.token,
+                  },
+                })
+                  .then(response => response.json())
+                  .then(responseJsonReport => {
+                    if (responseJsonReport.success === true) {
+                      let reportItem = {
+                        user: responseJsonUser.data,
+                        report: responseJsonReport.data,
+                        date: report.createdAt,
+                        id: report._id,
+                      };
+                      this.setState(prevState => ({
+                        dayplan: [...prevState.dayplan, reportItem],
+                      }));
+                    }
+                  })
+                  .catch(error => {
+                    console.error(error);
+                  });
+              }
+            });
+        });
+
+        eod.map(report => {
+          fetch(userUrl + report.userId)
+            .then(response => response.json())
+            .then(responseJsonUser => {
+              if (responseJsonUser.success === true) {
+                let user = responseJsonUser.data;
+                userId = user._id;
+
+                fetch(reportUrl + report.modelId, {
+                  headers: {
+                    'x-access-token': this.state.token,
+                  },
+                })
+                  .then(response => response.json())
+                  .then(responseJsonReport => {
+                    if (responseJsonReport.success === true) {
+                      let reportItem = {
+                        user: responseJsonUser.data,
+                        report: responseJsonReport.data,
+                        date: report.createdAt,
+                        id: report._id,
+                      };
+                      this.setState(prevState => ({
+                        eodplan: [...prevState.eodplan, reportItem],
+                      }));
+                    }
+                  })
+                  .catch(error => {
+                    console.error(error);
+                  });
+              }
+            });
+        });
+      });
   }
 
   render() {
@@ -136,34 +230,33 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   context: {
-    marginTop: 20
+    marginTop: 20,
   },
   weeklyPart: {
-    marginBottom: 30
+    marginBottom: 30,
   },
   dayPart: {
-    marginBottom: 30
+    marginBottom: 30,
   },
   eodPart: {
-    marginBottom: 30
+    marginBottom: 30,
   },
   progressStatus: {
-    marginTop: 20
+    marginTop: 20,
   },
-  objectiveProgress:{
-    marginTop: 5
+  objectiveProgress: {
+    marginTop: 5,
   },
-  objectiveProgressDescription:{
+  objectiveProgressDescription: {
     marginTop: 10,
     padding: 20,
     borderWidth: 1,
-    borderColor: '#cdcdcd'
+    borderColor: '#cdcdcd',
   },
-  progressBar:{
-    marginTop: 10
+  progressBar: {
+    marginTop: 10,
   },
-  progressBarStatus:{
-    marginBottom: 10
-  }
-
+  progressBarStatus: {
+    marginBottom: 10,
+  },
 });
