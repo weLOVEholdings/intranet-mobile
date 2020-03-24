@@ -138,4 +138,8 @@ export const globalStyles = StyleSheet.create({
   boldText: {
     fontWeight: 'bold',
   },
+  dialogTitle: {
+    fontWeight: 'bold',
+    fontSize: 32,
+  },
 });
