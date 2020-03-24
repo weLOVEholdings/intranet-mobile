@@ -9,11 +9,16 @@ import {
   TouchableOpacity,
   Modal,
   KeyboardAvoidingView,
+  SafeAreaView,
+  Button,
 } from 'react-native';
 import {RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
+import {actions as RichEditorActions} from 'react-native-pell-rich-editor';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {globalStyles} from '../../styles/global';
+
+const initHTML = '';
 
 export default function DayPlan({openModal, closeModal, reportDialogShow}) {
   const [reportDetails, setreportDetails] = useState('');
@@ -38,65 +43,87 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
   // const onHome = () => {
   //   this.props.navigation.push('index');
   // };
-
+  const that = this;
   return (
     <Modal
       visible={openModal}
       onRequestClose={() => {
         closeModal(!openModal);
       }}>
-      <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          transparent: 'true',
-        }}>
-        <View style={styles.dialogContainer}>
-          <View style={globalStyles.dialogHeader}>
-            <TouchableOpacity
-              onPress={() => {
-                closeModal(false);
-              }}>
-              <AntDesign name="arrowleft" size={18} />
-              <Text style={globalStyles.boldText}>Voltar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                reportDialogShow(false);
-              }}>
-              <AntDesign name="close" size={18} />
-            </TouchableOpacity>
-          </View>
-          <View style={globalStyles.dialogtitleContainer}>
-            <Text style={globalStyles.dialogTitle}>Day Plan</Text>
-          </View>
-          <View style={globalStyles.dialogFormContainer}>
-            <ScrollView style={styles.scroll}>
-              <RichEditor
-                ref={rf => that.richText = rf}
-                initialContentHTML={initHTML}
-                style={styles.rich}
-              />
-            </ScrollView>
-            <KeyboardAvoidingView behavior={'padding'} >
-              <RichToolbar
-                style={styles.richBar}
-                getEditor={() => that.richText}
-                iconTint={'#000033'}
-                selectedIconTint={'#2095F2'}
-                selectedButtonStyle={{backgroundColor: "transparent"}}
-                onPressAddImage={that.onPressAddImage}
-              />
-            </KeyboardAvoidingView>
+      <SafeAreaView style={styles.container}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            transparent: 'true',
+          }}>
+          <View style={styles.dialogContainer}>
+            <View style={globalStyles.dialogHeader}>
+              <View style={styles.nav}>
+                <TouchableOpacity
+                  onPress={() => {
+                    closeModal(false);
+                  }}>
+                  <AntDesign name="arrowleft" size={18} />
+                  <Text style={globalStyles.boldText}>Voltar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    reportDialogShow(false);
+                  }}>
+                  <AntDesign name="close" size={18} />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={globalStyles.dialogtitleContainer}>
+              <Text style={globalStyles.dialogTitle}>Day Plan</Text>
+            </View>
+            <View>
+              <ScrollView style={styles.scroll}>
+                <RichEditor
+                  ref={rf => (that.richText = rf)}
+                  initialContentHTML={initHTML}
+                  style={styles.rich}
+                />
+              </ScrollView>
+              <KeyboardAvoidingView behavior={'position'} enabled keyboardVerticalOffset={140}>
+                <RichToolbar
+                  style={styles.richBar}
+                  getEditor={() => that.richText}
+                  iconTint={'#000033'}
+                  selectedIconTint={'#2095F2'}
+                  selectedButtonStyle={{backgroundColor: 'transparent'}}
+                  actions={[
+                    RichEditorActions.setBold,
+                    RichEditorActions.setItalic,
+                    RichEditorActions.insertBulletsList,
+                    RichEditorActions.insertOrderedList,
+                    RichEditorActions.insertLink,
+                  ]}
+                />
+              </KeyboardAvoidingView>
+              <TouchableOpacity style={styles.greenButtonWidget} onPress={save}>
+                <Text style={styles.greenButton}>Create Report</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5FCFF',
+  },
+  nav: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 5,
+  },
   iconWithText: {
     paddingLeft: 8,
     width: 100,
@@ -262,5 +289,16 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     marginTop: 10,
+  },
+  rich: {
+    minHeight: 300,
+    flex: 1,
+  },
+  richBar: {
+    height: 50,
+    backgroundColor: '#F5FCFF',
+  },
+  scroll: {
+    backgroundColor: '#ffffff',
   },
 });
