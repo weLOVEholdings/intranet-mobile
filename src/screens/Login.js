@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {Formik} from 'formik';
 import * as yup from 'yup';
+import {useNavigation} from '@react-navigation/native';
 import HeaderImage from '../shared/weLoveImage';
 import FlatButton from '../shared/button';
 import {_storeData} from '../utils/storage';
@@ -24,7 +25,7 @@ const loginSchema = yup.object({
     .required(),
 });
 
-export default function Login({navigation}) {
+export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const LoginSubmit = ({email, password}) => {
@@ -65,7 +66,7 @@ export default function Login({navigation}) {
         _storeData('user', responseData.data);
         _storeData('token', responseData.token);
         Alert.alert('Hi! ' + responseData.data.name);
-        navigation.navigate('Home');
+        useNavigation.navigate('Home');
       });
   };
 
