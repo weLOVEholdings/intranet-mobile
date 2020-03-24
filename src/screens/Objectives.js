@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Header from '../components/Header/Header';
+import {globalStyles} from '../styles/global';
+import {_startWeek, _endWeek} from '../utils/dateSetter';
 
 export default class Objectives extends React.Component {
   render() {
@@ -22,7 +24,10 @@ export default class Objectives extends React.Component {
             <View style={styles.body}>
               <Header />
               <View style={styles.sectionContainer}>
-                <Text>Objectives</Text>
+                <Text style={globalStyles.dialogTitle}>Weekly Objectives</Text>
+                <Text>
+                  {_startWeek()} - {_endWeek()}
+                </Text>
               </View>
             </View>
           </ScrollView>

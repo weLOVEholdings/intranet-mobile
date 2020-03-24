@@ -24,3 +24,17 @@ export const Dayplan = report => {
       report.closeFormModal(false);
     });
 };
+
+export const getReportDates = type => {
+  var apiUrl =
+    'https://welove-intranet-backend.herokuapp.com/contas/reportsteam/type/';
+
+  fetch(apiUrl + type)
+    .then(response => response.json())
+    .then(responseJson => {
+      return responseJson.data;
+    })
+    .catch(error => {
+      console.error(error);
+    });
+};
