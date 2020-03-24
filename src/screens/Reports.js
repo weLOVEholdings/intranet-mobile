@@ -12,7 +12,6 @@ import {
   Picker,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import Moment from 'moment';
 import Header from '../components/Header/Header';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -44,16 +43,16 @@ export default class Reports extends React.Component {
     this.setState({reportDialog: visible});
   };
 
-  currentDateSetter = () => {
-    let mdy = Moment(date).format('MM/DD/YYYY');
-    let tme = Moment(date).format('h:mm A');
-    return mdy + ' @ ' + tme;
-  };
+  // currentDateSetter = () => {
+  //   let mdy = Moment(date).format('MM/DD/YYYY');
+  //   let tme = Moment(date).format('h:mm A');
+  //   return mdy + ' @ ' + tme;
+  // };
 
   render() {
     return (
       <>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar backgroundColor="transparent" />
         <SafeAreaView>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
