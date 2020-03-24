@@ -96,6 +96,7 @@ export default class Reports extends React.Component {
                             alignItems: 'center',
                             justifyContent: 'center',
                             transparent: 'true',
+                            width: '100%',
                           }}>
                           <View style={styles.dialogContainer}>
                             <View style={styles.dialogClose}>
@@ -419,6 +420,7 @@ const styles = StyleSheet.create({
   },
   reportDialogContent: {
     alignItems: 'center',
+    width: '100%',
   },
   cardView: {
     alignItems: 'center',

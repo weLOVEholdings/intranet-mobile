@@ -95,6 +95,8 @@ export default class TimeLine extends React.Component {
       return 'DAY PLAN';
     } else if (type === 'eod') {
       return 'END OF THE DAY';
+    } else if (type === 'report') {
+      return 'REPORT';
     } else {
       return 'OBJECTIVE';
     }
