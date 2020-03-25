@@ -10,6 +10,15 @@ export const globalStyles = StyleSheet.create({
     alignItems: 'center',
     color: 'white',
   },
+  loadingContainer: {
+    flex: 1,
+    paddingTop: 40,
+    paddingHorizontal: 20,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    color: 'white',
+    minHeight: 400,
+  },
   card: {
     minHeight: 200,
   },
@@ -138,8 +147,15 @@ export const globalStyles = StyleSheet.create({
   boldText: {
     fontWeight: 'bold',
   },
+  greyText: {
+    color: '#6d6d6d',
+    fontWeight: 'bold',
+  },
   dialogTitle: {
     fontWeight: 'bold',
     fontSize: 32,
+  },
+  bottomMargin: {
+    marginBottom: 24,
   },
 });

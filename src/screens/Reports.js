@@ -2,6 +2,8 @@
 import React from 'react';
 import {
   View,
+  Image,
+  Platform,
   StyleSheet,
   StatusBar,
   SafeAreaView,
@@ -11,6 +13,8 @@ import {
   Modal,
   Picker,
 } from 'react-native';
+import Moment from 'moment';
+import {useNavigation} from '@react-navigation/native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Header from '../components/Header/Header';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -19,6 +23,7 @@ import {TextInput} from 'react-native-gesture-handler';
 import {_retrieveData} from '../utils/storage';
 import {_currentDate} from '../utils/dateSetter';
 import Dayplan from '../components/Modals/Dayplan';
+import {globalStyles} from '../styles/global';
 
 export default class Reports extends React.Component {
   constructor(props) {
@@ -29,12 +34,51 @@ export default class Reports extends React.Component {
       user: {},
       token: '',
       openModalDayplan: false,
+      dayreports: [],
     };
   }
 
   componentDidMount() {
+    let baseUrl = 'https://welove-intranet-backend.herokuapp.com';
+    let userUrl = baseUrl + '/contas/id/';
+
     _retrieveData('user').then(user => this.setState({user: user}));
     _retrieveData('token').then(token => this.setState({token: token}));
+
+    fetch(baseUrl + '/timelineentry/all')
+      .then(response => response.json())
+      .then(responseJson => {
+        let day = [];
+
+        day = responseJson.data.filter(
+          a => Moment(a.createdAt).startOf('day') - Moment().startOf('day') === 0 && (a.type === 'dayplan' || a.type === 'eod' )
+        );
+
+        let reports = day.sort(function(a, b) {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+
+        reports.map(report => {
+          fetch(userUrl + report.userId)
+            .then(response => response.json())
+            .then(responseJsonUser => {
+              if (responseJsonUser.success === true) {
+                let user = responseJsonUser.data;
+
+                let reportItem = {
+                  userpic: user.picture,
+                  username: user.name,
+                  type: report.type,
+                  id: report._id,
+                };
+
+                this.setState(prevState => ({
+                  dayreports: [...prevState.dayreports, reportItem],
+                }));
+              }
+            });
+        });
+      });
   }
 
   reportTeamDialogShow = visible => {
@@ -50,9 +94,17 @@ export default class Reports extends React.Component {
   };
 
   render() {
+    const navigation = this.props.navigation;
     return (
-      <>
-        <StatusBar backgroundColor="transparent" />
+      <View style={{
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+      }}>
+        <StatusBar
+          barStyle="dark-content"
+          hidden={false}
+          backgroundColor="transparent"
+          translucent={true}
+        />
         <SafeAreaView>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
@@ -61,7 +113,9 @@ export default class Reports extends React.Component {
               <Header />
               <View style={styles.sectionContainer}>
                 <View style={styles.username}>
-                  <Text>Username: {this.state.user.name}</Text>
+                  <Text styles={globalStyles.boldText}>
+                    Username: {this.state.user.name}
+                  </Text>
                 </View>
                 <View style={styles.main}>
                   <View style={styles.currentdate}>
@@ -270,12 +324,40 @@ export default class Reports extends React.Component {
                       </Modal>
                     </View>
                   </View>
+                  <View>
+                    {this.state.dayreports &&
+                      this.state.dayreports.map(report => {
+                        return (
+                          <View style={styles.usersContainer} key={report.id}>
+                            {report.userpic ? (
+                              <Image
+                                style={globalStyles.imageRound}
+                                source={{
+                                  uri: report.userpic,
+                                }}
+                              />
+                            ) : (
+                              <Image
+                                style={globalStyles.imageRound}
+                                source={require('../assets/images/unknown.jpg')}
+                              />
+                            )}
+                            <Text>{report.username}</Text>
+                            <Text>{report.type}</Text>
+                            <TouchableOpacity
+                              onPress={() => navigation.navigate('Timeline')}>
+                              <Text style={styles.linkText}>View</Text>
+                            </TouchableOpacity>
+                          </View>
+                        );
+                      })}
+                  </View>
                 </View>
               </View>
             </View>
           </ScrollView>
         </SafeAreaView>
-      </>
+      </View>
     );
   }
 }
@@ -298,6 +380,7 @@ const styles = StyleSheet.create({
   username: {
     flex: 1,
     flexDirection: 'row-reverse',
+    marginBottom: 12,
   },
   currentdate: {
     flex: 1,
@@ -440,4 +523,17 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginTop: 10,
   },
+  usersContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 12,
+    paddingBottom: 12,
+  },
+  linkText: {
+    color: '#007bff',
+    fontWeight: 'bold',
+    fontSize: 14,
+  }
 });

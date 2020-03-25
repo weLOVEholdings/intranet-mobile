@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   View,
+  PlatForm,
   StyleSheet,
   StatusBar,
   SafeAreaView,
@@ -13,8 +14,10 @@ import Header from '../components/Header/Header';
 export default class Intelligence extends React.Component {
   render() {
     return (
-      <>
-        <StatusBar backgroundColor="transparent" />
+      <View style={{
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+      }}>
+        <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "transparent" translucent = {true}/>
         <SafeAreaView>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
@@ -27,7 +30,7 @@ export default class Intelligence extends React.Component {
             </View>
           </ScrollView>
         </SafeAreaView>
-      </>
+      </View>
     );
   }
 }

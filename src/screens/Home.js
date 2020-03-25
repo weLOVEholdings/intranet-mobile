@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   View,
+  Platform,
   StyleSheet,
   StatusBar,
   SafeAreaView,
@@ -52,8 +53,8 @@ class HomeScreen extends React.Component {
           a => Moment(a.createdAt).startOf('day') - Moment().startOf('day') === 0 && a.type === 'eod',
         );
 
-        console.log('day: ' + JSON.stringify(day));
-        console.log('eod: ' + JSON.stringify(eod));
+        //console.log('day: ' + JSON.stringify(day));
+        //console.log('eod: ' + JSON.stringify(eod));
 
         day.map(report => {
           fetch(userUrl + report.userId)
@@ -128,8 +129,10 @@ class HomeScreen extends React.Component {
   render() {
     if (this.state.token) {
       return (
-        <>
-          <StatusBar backgroundColor="transparent" />
+        <View style={{
+          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        }}>
+          <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "transparent" translucent = {true}/>
           <SafeAreaView>
             <ScrollView
               contentInsetAdjustmentBehavior="automatic"
@@ -182,7 +185,7 @@ class HomeScreen extends React.Component {
               </View>
             </ScrollView>
           </SafeAreaView>
-        </>
+        </View>
       );
     } else {
       return <Login />;
@@ -204,7 +207,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   sectionContainer: {
-    marginTop: 32,
+    marginTop: 24,
     paddingHorizontal: 24,
   },
   sectionTitle: {

@@ -4,6 +4,7 @@ import {
   View,
   FlatList,
   Image,
+  Platform,
   StatusBar,
   SafeAreaView,
   ScrollView,
@@ -105,8 +106,10 @@ export default class TimeLine extends React.Component {
   render() {
     let {reports} = this.state;
     return (
-      <>
-        <StatusBar backgroundColor="transparent" />
+      <View style={{
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+      }}>
+        <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "transparent" translucent = {true}/>
         <SafeAreaView>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
@@ -115,16 +118,16 @@ export default class TimeLine extends React.Component {
               <Header />
               <View style={globalStyles.sectionContainer}>
                 {this.state.isLoading ? (
-                  <View style={globalStyles.container}>
+                  <View style={globalStyles.loadingContainer}>
                     <ActivityIndicator size="large" color="#e6e6e6" animating />
-                    <Text>Loading timeline...</Text>
+                    <Text style={globalStyles.greyText}>Loading timeline...</Text>
                   </View>
                 ) : (
                   <FlatList
                     data={reports}
                     keyExtractor={item => item.id}
                     renderItem={({item}) => (
-                      <View>
+                      <View style={globalStyles.bottomMargin}>
                         <View style={globalStyles.timelineHeaderContainer}>
                           <View style={globalStyles.timelineItemImg}>
                             {item.user.picture ? (
@@ -176,7 +179,7 @@ export default class TimeLine extends React.Component {
             </View>
           </ScrollView>
         </SafeAreaView>
-      </>
+      </View>
     );
   }
 }
