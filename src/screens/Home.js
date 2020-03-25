@@ -1,30 +1,41 @@
 import React from 'react';
 import {
+  Image,
   View,
   StyleSheet,
   StatusBar,
   SafeAreaView,
   ScrollView,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
+import HTML from 'react-native-render-html';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Moment from 'moment';
 import Header from '../components/Header/Header';
 import Login from './Login';
 import {_retrieveData} from '../utils/storage';
 import ProgressBar from '@kcodev/react-native-progress-bar';
-import {Collapse,CollapseHeader, CollapseBody, AccordionList} from 'accordion-collapse-react-native';
-import { Thumbnail, List, ListItem, Separator } from 'native-base';
+import {
+  Collapse,
+  CollapseHeader,
+  CollapseBody,
+  AccordionList,
+} from 'accordion-collapse-react-native';
+import {Thumbnail, List, ListItem, Separator} from 'native-base';
+import {_reportDate} from '../utils/dateSetter';
+import {globalStyles} from '../styles/global';
+
 class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       user: {},
-      token: '',
+      token: _retrieveData('token'),
       dayplan: [],
       eodplan: [],
-      weeklyObljectives: [],
+      weeklyObjectives: [],
+      dayreports: [],
     };
   }
 
@@ -36,97 +47,92 @@ class HomeScreen extends React.Component {
     let baseUrl = 'https://welove-intranet-backend.herokuapp.com';
     let userUrl = baseUrl + '/contas/id/';
     let reportUrl = baseUrl + '/reports/id/';
+    let objectivesUrl = baseUrl + '/objectives/weekNumber/';
     let userId;
+    let weekNumber = Moment().isoWeek();
     _retrieveData('user').then(user => this.setState({user: user}));
-    _retrieveData('token').then(token => this.setState({token: token}));
+    _retrieveData('token').then(token => {
+      this.setState({token: token});
+      fetch(objectivesUrl + weekNumber, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'x-access-token': token,
+          Authorization: 'Bearer ' + token,
+        },
+      })
+        .then(response => response.json())
+        .then(responseJson => {
+          //console.log(JSON.stringify(responseJson.data));
+          this.setState(prevState => ({
+            weeklyObjectives: [
+              ...prevState.weeklyObjectives,
+              responseJson.data,
+            ],
+          }));
+        });
+    });
 
-    fetch(baseUrl + '/timelineentry/all')
+    let now = Moment();
+    let year = now.get('year');
+    let month = now.get('month') + 1;
+    let day = now.get('date');
+
+    fetch(baseUrl + '/reportsteam/year/' + year + '/month/' + month + '/day/' + day)
       .then(response => response.json())
       .then(responseJson => {
-        let day = [];
-        let eod = [];
-
-        day = responseJson.data.filter(
-          a => Moment(a.createdAt).startOf('day') - Moment().startOf('day') === 0 && a.type === 'dayplan'
-        );
-
-        eod = responseJson.data.filter(
-          a => Moment(a.createdAt).startOf('day') - Moment().startOf('day') === 0 && a.type === 'eod',
-        );
-
-        console.log('day: ' + JSON.stringify(day));
-        console.log('eod: ' + JSON.stringify(eod));
-
-
-        day.map(report => {
-          fetch(userUrl + report.userId)
+        let dayreports = responseJson.data;
+        dayreports.map(report => {
+          let url = '/reports/reportsteam/id/' + report._id;
+          fetch(baseUrl + url)
             .then(response => response.json())
-            .then(responseJsonUser => {
-              if (responseJsonUser.success === true) {
-                let user = responseJsonUser.data;
-                userId = user._id;
-
-                fetch(reportUrl + report.modelId, {
-                  headers: {
-                    'x-access-token': this.state.token,
-                  },
-                })
+            .then(responseReportJson => {
+              let reports = responseReportJson.data.sort(function(a, b) {
+                return new Date(b.createdAt) - new Date(a.createdAt);
+              });
+              reports.map(r => {
+                fetch(userUrl + r.userId)
                   .then(response => response.json())
-                  .then(responseJsonReport => {
-                    if (responseJsonReport.success === true) {
-                      let reportItem = {
-                        user: responseJsonUser.data,
-                        report: responseJsonReport.data,
-                        date: report.createdAt,
-                        id: report._id,
-                      };
-                      this.setState(prevState => ({
-                        dayplan: [...prevState.dayplan, reportItem],
-                      }));
-                    }
-                  })
-                  .catch(error => {
-                    console.error(error);
-                  });
-              }
-            });
-        });
+                  .then(responseJsonUser => {
+                    if (responseJsonUser.success === true) {
+                      let user = responseJsonUser.data;
 
-        eod.map(report => {
-          fetch(userUrl + report.userId)
-            .then(response => response.json())
-            .then(responseJsonUser => {
-              if (responseJsonUser.success === true) {
-                let user = responseJsonUser.data;
-                userId = user._id;
-
-                fetch(reportUrl + report.modelId, {
-                  headers: {
-                    'x-access-token': this.state.token,
-                  },
-                })
-                  .then(response => response.json())
-                  .then(responseJsonReport => {
-                    if (responseJsonReport.success === true) {
                       let reportItem = {
-                        user: responseJsonUser.data,
-                        report: responseJsonReport.data,
-                        date: report.createdAt,
-                        id: report._id,
+                        userpic: user.picture,
+                        username: user.name,
+                        type: r.type,
+                        id: r._id,
+                        text: r.text,
+                        createdAt: r.createdAt,
                       };
-                      this.setState(prevState => ({
-                        eodplan: [...prevState.eodplan, reportItem],
-                      }));
+                      if (r.type === 'dayplan') {
+                        this.setState(prevState => ({
+                          dayplan: [...prevState.dayplan, reportItem],
+                        }));
+                      } else {
+                        this.setState(prevState => ({
+                          eodplan: [...prevState.eodplan, reportItem],
+                        }));
+                      }
                     }
-                  })
-                  .catch(error => {
-                    console.error(error);
                   });
-              }
+              });
             });
         });
       });
   }
+
+  typeFormatter = type => {
+    if (type === 'dayplan') {
+      return 'DAY PLAN';
+    } else if (type === 'eod') {
+      return 'END OF THE DAY';
+    } else if (type === 'report') {
+      return 'REPORT';
+    } else {
+      return 'OBJECTIVE';
+    }
+  };
 
   render() {
     if (this.state.token) {
@@ -146,69 +152,150 @@ class HomeScreen extends React.Component {
                       <Text style={{fontSize: 28}}>Hello, {this.state.user.name}</Text>
                     </View>
                     <View style={styles.context}>
-                      <Collapse>
-                        <CollapseHeader>
+                      <Collapse isCollapsed={this.state.weeklyObjectives.length > 0 ? true : false}>
+                        <CollapseHeader style={{backgroundColor: '#fff'}}>
                           <Separator bordered>
                             <Text>Weekly Report</Text>
                           </Separator>
                         </CollapseHeader>
                         <CollapseBody>
-                          <View style={styles.progressStatus}>
-                          <View style={styles.objectiveProgress}>
-                            <Text style={styles.objectiveProgressTitle}>OBJECTIVE</Text>
-                            <View style={styles.objectiveProgressDescription}>
-                              <Text style={styles.objectiveProgressDescriptionContext}>Complete INTRANET mobile application Start Work on courses module Start work on timeline module</Text>
-                            </View>
-                          </View>
-                          <View style={styles.progressBar}>
-                            <Text style={styles.progressBarStatus}>Progress: 70%</Text>
-                            <ProgressBar value={70} maxValue={100} backgroundColorOnComplete="#123123" backgroundColor="#987987" />
-                          </View>
-                        </View>
+                          {this.state.weeklyObljectives && this.state.weeklyObljectives.map(obj => {
+                            return (
+                              <View style={styles.progressStatus}>
+                                <View style={styles.objectiveProgress}>
+                                  <Text style={styles.objectiveProgressTitle}>
+                                    OBJECTIVE
+                                  </Text>
+                                  <View style={styles.objectiveProgressDescription}>
+                                    <HTML html={obj.title} />
+                                  </View>
+                                </View>
+                                <View style={styles.progressBar}>
+                                  <Text style={styles.progressBarStatus}>
+                                    Progress: {obj.progress}%
+                                  </Text>
+                                  <ProgressBar value={obj.progress} maxValue={100} backgroundColorOnComplete="#123123" backgroundColor="#987987" />
+                                </View>
+                              </View>);
+                          })}
                         </CollapseBody>
                       </Collapse>
 
-                      <Collapse>
+                      <Collapse isCollapsed={this.state.dayplan.length > 0 ? true : false}>
                         <CollapseHeader>
                           <Separator bordered>
                             <Text>Day Of Plan</Text>
                           </Separator>
                         </CollapseHeader>
-                        <CollapseBody>
-                          <View style={styles.progressStatus}>
-                            <View style={styles.objectiveProgress}>
-                              <Text style={styles.objectiveProgressTitle}>OBJECTIVE</Text>
-                              <View style={styles.objectiveProgressDescription}>
-                                <Text style={styles.objectiveProgressDescriptionContext}>Complete INTRANET mobile application Start Work on courses module Start work on timeline module</Text>
+                        <CollapseBody style={{marginTop: 24}}>
+                          {this.state.dayplan && this.state.dayplan.map(item => {
+                            return (
+                              <View style={globalStyles.bottomMargin}>
+                                <View style={globalStyles.timelineHeaderContainer}>
+                                  <View style={globalStyles.timelineItemImg}>
+                                    {item.userpic ? (
+                                      <Image
+                                        style={globalStyles.imageRound}
+                                        source={{
+                                          uri: item.userpic,
+                                        }}
+                                      />
+                                    ) : (
+                                      <Image
+                                        style={globalStyles.imageRound}
+                                        source={require('../assets/images/unknown.jpg')}
+                                      />
+                                    )}
+                                  </View>
+                                  <View style={globalStyles.timelineUserDetails}>
+                                    <View style={globalStyles.timelineHeaderContainer}>
+                                      <View style={globalStyles.timelineTwoColumn}>
+                                        <Text style={globalStyles.boldText}>
+                                          {item.username}
+                                        </Text>
+                                      </View>
+                                      <View style={globalStyles.reportTypeContainer}>
+                                        <Text style={globalStyles.boldText}>
+                                          {item.type
+                                            ? this.typeFormatter(item.type)
+                                            : null}
+                                        </Text>
+                                      </View>
+                                    </View>
+                                    <View style={globalStyles.timelineHeaderContainer}>
+                                      <Text style={globalStyles.boldText}>
+                                        {_reportDate(item.createdAt)}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                </View>
+                                <View style={globalStyles.timelineCard}>
+                                  {item.text ? (
+                                    <HTML html={item.text} />
+                                  ) : null}
+                                </View>
                               </View>
-                            </View>
-                            <View style={styles.progressBar}>
-                              <Text style={styles.progressBarStatus}>Progress: 70%</Text>
-                              <ProgressBar value={70} maxValue={100} backgroundColorOnComplete="#123123" backgroundColor="#987987" />
-                            </View>
-                          </View>
+                            )
+                          })}
                         </CollapseBody>
                       </Collapse>
 
-                      <Collapse>
-                        <CollapseHeader>
+                      <Collapse isCollapsed={this.state.eodplan.length > 0 ? true : false}>
+                        <CollapseHeader style={{marginBottom: 24}}>
                           <Separator bordered>
                             <Text>End of day</Text>
                           </Separator>
                         </CollapseHeader>
                         <CollapseBody>
-                          <View style={styles.progressStatus}>
-                            <View style={styles.objectiveProgress}>
-                              <Text style={styles.objectiveProgressTitle}>OBJECTIVE</Text>
-                              <View style={styles.objectiveProgressDescription}>
-                                <Text style={styles.objectiveProgressDescriptionContext}>Complete INTRANET mobile application Start Work on courses module Start work on timeline module</Text>
+                        {this.state.eodplan && this.state.eodplan.map(item => {
+                          return (
+                            <View style={[globalStyles.bottomMargin]}>
+                              <View style={globalStyles.timelineHeaderContainer}>
+                                <View style={globalStyles.timelineItemImg}>
+                                  {item.userpic ? (
+                                    <Image
+                                      style={globalStyles.imageRound}
+                                      source={{
+                                        uri: item.userpic,
+                                      }}
+                                    />
+                                  ) : (
+                                    <Image
+                                      style={globalStyles.imageRound}
+                                      source={require('../assets/images/unknown.jpg')}
+                                    />
+                                  )}
+                                </View>
+                                <View style={globalStyles.timelineUserDetails}>
+                                  <View style={globalStyles.timelineHeaderContainer}>
+                                    <View style={globalStyles.timelineTwoColumn}>
+                                      <Text style={globalStyles.boldText}>
+                                        {item.username}
+                                      </Text>
+                                    </View>
+                                    <View style={globalStyles.reportTypeContainer}>
+                                      <Text style={globalStyles.boldText}>
+                                        {item.type
+                                          ? this.typeFormatter(item.type)
+                                          : null}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                  <View style={globalStyles.timelineHeaderContainer}>
+                                    <Text style={globalStyles.boldText}>
+                                      {_reportDate(item.createdAt)}
+                                    </Text>
+                                  </View>
+                                </View>
+                              </View>
+                              <View style={globalStyles.timelineCard}>
+                                {item.text ? (
+                                  <HTML html={item.text} />
+                                ) : null}
                               </View>
                             </View>
-                            <View style={styles.progressBar}>
-                              <Text style={styles.progressBarStatus}>Progress: 70%</Text>
-                              <ProgressBar value={70} maxValue={100} backgroundColorOnComplete="#123123" backgroundColor="#987987" />
-                            </View>
-                          </View>
+                          )
+                        })}
                         </CollapseBody>
                       </Collapse>
                     </View>
