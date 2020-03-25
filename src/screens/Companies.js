@@ -2,6 +2,7 @@ import React from 'react';
 import {
   FlatList,
   Image,
+  PlatForm,
   StyleSheet,
   StatusBar,
   SafeAreaView,
@@ -17,8 +18,10 @@ import {globalStyles} from '../styles/global';
 
 export default function Companies() {
   return (
-    <>
-      <StatusBar backgroundColor="transparent" />
+    <View style={{
+      paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    }}>
+      <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "transparent" translucent = {true}/>
       <SafeAreaView>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
@@ -54,7 +57,7 @@ export default function Companies() {
           </View>
       </ScrollView>
       </SafeAreaView>
-    </>
+    </View>
   );
 }
 

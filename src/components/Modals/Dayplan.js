@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Alert,
   View,
@@ -16,33 +16,41 @@ import {RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
 import {actions as RichEditorActions} from 'react-native-pell-rich-editor';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+//import {getReportDates} from './Actions';
 import {globalStyles} from '../../styles/global';
 
 const initHTML = '';
 
 export default function DayPlan({openModal, closeModal, reportDialogShow}) {
   const [reportDetails, setreportDetails] = useState('');
+  const [reportDates, setreportDates] = useState('');
+  const [dates, setDates] = useState([]);
+  var apiUrl = 'https://welove-intranet-backend.herokuapp.com/reportsteam/type/dayplan';
+
+  //getReportDates('dayplan');
+
+  useEffect(() =>
+    fetch(apiUrl)
+      .then(res => res.json())
+      .then(res => {
+        console.log('dates: ' + res.data);
+        setDates(res.data);
+      })
+      .catch(err => console.log(err)),
+  );
 
   const save = async () => {
-    // Get the data here and call the interface to save the data
     let html = await this.richText.getContentHtml();
-    // console.log(html);
     Alert.alert(html);
   };
 
   const onPressAddImage = () => {
-    // insert URL
     this.richText.insertImage(
       'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1024px-React-icon.svg.png',
     );
-    // insert base64
-    // this.richText.insertImage(`data:${image.mime};base64,${image.data}`);
     this.richText.blurContentEditor();
   };
 
-  // const onHome = () => {
-  //   this.props.navigation.push('index');
-  // };
   const that = this;
   return (
     <Modal
@@ -78,7 +86,18 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
             </View>
             <View style={globalStyles.dialogtitleContainer}>
               <Text style={globalStyles.dialogTitle}>Day Plan</Text>
+              <View>
+                {dates &&
+                  dates.map(date => {
+                    return (
+                      <Text>
+                        {date.day}/{date.month}/{date.year}
+                      </Text>
+                    );
+                  })}
+              </View>
             </View>
+
             <View>
               <ScrollView style={styles.scroll}>
                 <RichEditor
@@ -87,7 +106,10 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
                   style={styles.rich}
                 />
               </ScrollView>
-              <KeyboardAvoidingView behavior={'position'} enabled keyboardVerticalOffset={140}>
+              <KeyboardAvoidingView
+                behavior={'position'}
+                enabled
+                keyboardVerticalOffset={140}>
                 <RichToolbar
                   style={styles.richBar}
                   getEditor={() => that.richText}
@@ -103,7 +125,9 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
                   ]}
                 />
               </KeyboardAvoidingView>
-              <TouchableOpacity style={styles.greenButtonWidget} onPress={save}>
+              <TouchableOpacity
+                style={styles.greenButtonWidget}
+                onPress={() => save()}>
                 <Text style={styles.greenButton}>Create Report</Text>
               </TouchableOpacity>
             </View>
@@ -291,7 +315,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   rich: {
-    minHeight: 300,
+    maxHeight: 120,
     flex: 1,
   },
   richBar: {
@@ -300,5 +324,10 @@ const styles = StyleSheet.create({
   },
   scroll: {
     backgroundColor: '#ffffff',
+  },
+  buttonContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+    marginTop: 12,
   },
 });

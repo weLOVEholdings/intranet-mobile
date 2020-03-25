@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from "react";
+
 export const Dayplan = report => {
   const apiUrl = 'https://welove-intranet-backend.herokuapp.com/reports/create';
   let reportDetails = {
@@ -25,16 +27,36 @@ export const Dayplan = report => {
     });
 };
 
-export const getReportDates = type => {
-  var apiUrl =
-    'https://welove-intranet-backend.herokuapp.com/contas/reportsteam/type/';
+// export function getReportDates(type) {
+//   console.log('getting report dates: ' + type);
+//   var apiUrl = 'https://welove-intranet-backend.herokuapp.com/timelineentry/all';
+//   console.log(apiUrl);
+//   fetch(apiUrl)
+//     .then(response => {
+//       console.log('response');
+//       console.log(response);
+//       response.json();
+//     })
+//     .then(responseJson => {
+//       console.log('responseJson');
+//       console.log(responseJson);
+//       return responseJson.data;
+//     })
+//     .catch(error => {
+//       console.error(error);
+//     });
+// }
 
-  fetch(apiUrl + type)
-    .then(response => response.json())
-    .then(responseJson => {
-      return responseJson.data;
-    })
-    .catch(error => {
-      console.error(error);
-    });
+export const getReportDates = type => {
+  const [dates, setDates] = useState([]);
+  var apiUrl = 'https://welove-intranet-backend.herokuapp.com/timelineentry/all';
+
+  useEffect(() =>
+    fetch(apiUrl)
+      .then(res => res.json())
+      .then(res => setDates(dates))
+      .catch((err) => console.log(err))
+  );
+
+  return dates;
 };

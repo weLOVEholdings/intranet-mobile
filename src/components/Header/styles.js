@@ -10,6 +10,7 @@ export default StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'white',
+    marginBottom: 40,
   },
   headerContainer: {
     paddingTop: 12,
