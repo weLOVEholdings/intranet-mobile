@@ -25,9 +25,9 @@ const loginSchema = yup.object({
     .required(),
 });
 
-export default function Login() {
+export default function Login({navigation}) {
   const [loading, setLoading] = useState(false);
-  const navigation = useNavigation();
+  const nav = useNavigation();
 
   const LoginSubmit = ({email, password}) => {
     const apiUrl = 'https://welove-intranet-backend.herokuapp.com/contas/login';
@@ -67,7 +67,7 @@ export default function Login() {
         _storeData('user', responseData.data);
         _storeData('token', responseData.token);
         Alert.alert('Hi! ' + responseData.data.name);
-        navigation.navigate('Home');
+        nav.navigate('Home');
       });
   };
 
