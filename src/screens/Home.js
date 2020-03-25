@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   View,
@@ -25,6 +26,7 @@ class HomeScreen extends React.Component {
       dayplan: [],
       eodplan: [],
       weeklyObjectives: [],
+      dayreports: [],
     };
   }
 
@@ -61,88 +63,49 @@ class HomeScreen extends React.Component {
         });
     });
 
-    fetch(baseUrl + '/timelineentry/all')
+    let now = Moment();
+    let year = now.get('year');
+    let month = now.get('month') + 1;
+    let day = now.get('date');
+
+    fetch(baseUrl + '/reportsteam/year/' + year + '/month/' + month + '/day/' + day)
       .then(response => response.json())
       .then(responseJson => {
-        let day = [];
-        let eod = [];
-
-        day = responseJson.data.filter(
-          a => Moment(a.createdAt).startOf('day') - Moment().startOf('day') === 0 && a.type === 'dayplan'
-        );
-
-        eod = responseJson.data.filter(
-          a => Moment(a.createdAt).startOf('day') - Moment().startOf('day') === 0 && a.type === 'eod',
-        );
-
-        //console.log('day: ' + JSON.stringify(day));
-        //console.log('eod: ' + JSON.stringify(eod));
-
-        day.map(report => {
-          fetch(userUrl + report.userId)
+        let dayreports = responseJson.data;
+        dayreports.map(report => {
+          let url = '/reports/reportsteam/id/' + report._id;
+          fetch(baseUrl + url)
             .then(response => response.json())
-            .then(responseJsonUser => {
-              if (responseJsonUser.success === true) {
-                let user = responseJsonUser.data;
-                userId = user._id;
-
-                fetch(reportUrl + report.modelId, {
-                  headers: {
-                    'x-access-token': this.state.token,
-                  },
-                })
+            .then(responseReportJson => {
+              let reports = responseReportJson.data.sort(function(a, b) {
+                return new Date(b.createdAt) - new Date(a.createdAt);
+              });
+              reports.map(r => {
+                fetch(userUrl + r.userId)
                   .then(response => response.json())
-                  .then(responseJsonReport => {
-                    if (responseJsonReport.success === true) {
-                      let reportItem = {
-                        user: responseJsonUser.data,
-                        report: responseJsonReport.data,
-                        date: report.createdAt,
-                        id: report._id,
-                      };
-                      this.setState(prevState => ({
-                        dayplan: [...prevState.dayplan, reportItem],
-                      }));
-                    }
-                  })
-                  .catch(error => {
-                    console.error(error);
-                  });
-              }
-            });
-        });
+                  .then(responseJsonUser => {
+                    if (responseJsonUser.success === true) {
+                      let user = responseJsonUser.data;
 
-        eod.map(report => {
-          fetch(userUrl + report.userId)
-            .then(response => response.json())
-            .then(responseJsonUser => {
-              if (responseJsonUser.success === true) {
-                let user = responseJsonUser.data;
-                userId = user._id;
-
-                fetch(reportUrl + report.modelId, {
-                  headers: {
-                    'x-access-token': this.state.token,
-                  },
-                })
-                  .then(response => response.json())
-                  .then(responseJsonReport => {
-                    if (responseJsonReport.success === true) {
                       let reportItem = {
-                        user: responseJsonUser.data,
-                        report: responseJsonReport.data,
-                        date: report.createdAt,
-                        id: report._id,
+                        userpic: user.picture,
+                        username: user.name,
+                        type: r.type,
+                        id: r._id,
+                        createdAt: r.createdAt,
                       };
-                      this.setState(prevState => ({
-                        eodplan: [...prevState.eodplan, reportItem],
-                      }));
+                      if (r.type === 'dayplan') {
+                        this.setState(prevState => ({
+                          dayplan: [...prevState.dayplan, reportItem],
+                        }));
+                      } else {
+                        this.setState(prevState => ({
+                          eodplan: [...prevState.eodplan, reportItem],
+                        }));
+                      }
                     }
-                  })
-                  .catch(error => {
-                    console.error(error);
                   });
-              }
+              });
             });
         });
       });

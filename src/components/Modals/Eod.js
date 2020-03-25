@@ -21,20 +21,13 @@ import {globalStyles} from '../../styles/global';
 
 const initHTML = '';
 
-export default function DayPlan({openModal, closeModal, reportDialogShow}) {
-  //const [reportDates, setreportDates] = useState('');
+export default function Eod({openModal, closeModal, reportDialogShow}) {
   const [selectedDateId, setSelectedDateId] = useState();
   const [selected, setSelected] = useState(false);
   const [dates, setDates] = useState([]);
 
   var apiUrl =
-    'https://welove-intranet-backend.herokuapp.com/reportsteam/type/dayplan';
-
-  // text: "",
-  // type: "",
-  // userId: "",
-  // status: "",
-  // reportsTeamId: ""
+    'https://welove-intranet-backend.herokuapp.com/reportsteam/type/eod';
 
   useEffect(() => {
     fetch(apiUrl)
@@ -48,15 +41,13 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
 
   const save = async () => {
     let text = await this.richText.getContentHtml();
-    let token = await _retrieveData('token');
     let user = await _retrieveData('user');
     let userId = user._id;
-    let type = 'dayplan';
+    let type = 'eod';
     let status = null;
     let reportsTeamId = selectedDateId;
 
     let report = {
-      token: token,
       text: text,
       userId: userId,
       teamId: reportsTeamId,
@@ -67,13 +58,6 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
     Alert.alert(JSON.stringify(report));
     CreateReport(report);
   };
-
-  // const onPressAddImage = () => {
-  //   this.richText.insertImage(
-  //     'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1024px-React-icon.svg.png',
-  //   );
-  //   this.richText.blurContentEditor();
-  // };
 
   const that = this;
   return (
@@ -112,7 +96,7 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
                 </View>
               </View>
               <View style={globalStyles.dialogtitleContainer}>
-                <Text style={globalStyles.dialogTitle}>Day Plan</Text>
+                <Text style={globalStyles.dialogTitle}>EOD</Text>
                 <View style={styles.dateContainer}>
                   {dates &&
                     dates.map(date => {

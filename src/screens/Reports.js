@@ -14,7 +14,7 @@ import {
   Picker,
 } from 'react-native';
 import Moment from 'moment';
-import {useNavigation} from '@react-navigation/native';
+//import {useNavigation} from '@react-navigation/native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Header from '../components/Header/Header';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -23,6 +23,7 @@ import {TextInput} from 'react-native-gesture-handler';
 import {_retrieveData} from '../utils/storage';
 import {_currentDate} from '../utils/dateSetter';
 import Dayplan from '../components/Modals/Dayplan';
+import Eod from '../components/Modals/Eod';
 import {globalStyles} from '../styles/global';
 
 export default class Reports extends React.Component {
@@ -34,6 +35,7 @@ export default class Reports extends React.Component {
       user: {},
       token: '',
       openModalDayplan: false,
+      openModalEod: false,
       dayreports: [],
     };
   }
@@ -45,37 +47,43 @@ export default class Reports extends React.Component {
     _retrieveData('user').then(user => this.setState({user: user}));
     _retrieveData('token').then(token => this.setState({token: token}));
 
-    fetch(baseUrl + '/timelineentry/all')
+    let now = Moment();
+    let year = now.get('year');
+    let month = now.get('month') + 1;
+    let day = now.get('date');
+
+    fetch(baseUrl + '/reportsteam/year/' + year + '/month/' + month + '/day/' + day)
       .then(response => response.json())
       .then(responseJson => {
-        let day = [];
-
-        day = responseJson.data.filter(
-          a => Moment(a.createdAt).startOf('day') - Moment().startOf('day') === 0 && (a.type === 'dayplan' || a.type === 'eod' )
-        );
-
-        let reports = day.sort(function(a, b) {
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        });
-
-        reports.map(report => {
-          fetch(userUrl + report.userId)
+        let dayreports = responseJson.data;
+        dayreports.map(report => {
+          let url = '/reports/reportsteam/id/' + report._id;
+          fetch(baseUrl + url)
             .then(response => response.json())
-            .then(responseJsonUser => {
-              if (responseJsonUser.success === true) {
-                let user = responseJsonUser.data;
+            .then(responseReportJson => {
+              let reports = responseReportJson.data.sort(function(a, b) {
+                return new Date(b.createdAt) - new Date(a.createdAt);
+              });
+              reports.map(r => {
+                fetch(userUrl + r.userId)
+                  .then(response => response.json())
+                  .then(responseJsonUser => {
+                    if (responseJsonUser.success === true) {
+                      let user = responseJsonUser.data;
 
-                let reportItem = {
-                  userpic: user.picture,
-                  username: user.name,
-                  type: report.type,
-                  id: report._id,
-                };
-
-                this.setState(prevState => ({
-                  dayreports: [...prevState.dayreports, reportItem],
-                }));
-              }
+                      let reportItem = {
+                        userpic: user.picture,
+                        username: user.name,
+                        type: r.type,
+                        id: r._id,
+                        createdAt: r.createdAt,
+                      };
+                      this.setState(prevState => ({
+                        dayreports: [...prevState.dayreports, reportItem],
+                      }));
+                    }
+                  });
+              });
             });
         });
       });
@@ -93,12 +101,17 @@ export default class Reports extends React.Component {
     this.setState({openModalDayplan: open});
   };
 
+  setModalEod = open => {
+    this.setState({openModalEod: open});
+  };
+
   render() {
     const navigation = this.props.navigation;
     return (
-      <View style={{
-        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-      }}>
+      <View
+        style={{
+          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        }}>
         <StatusBar
           barStyle="dark-content"
           hidden={false}
@@ -113,7 +126,7 @@ export default class Reports extends React.Component {
               <Header />
               <View style={styles.sectionContainer}>
                 <View style={styles.username}>
-                  <Text styles={globalStyles.boldText}>
+                  <Text style={styles.usernameText}>
                     Username: {this.state.user.name}
                   </Text>
                 </View>
@@ -125,7 +138,14 @@ export default class Reports extends React.Component {
                       color="#6d6d6d"
                       style={styles.dateIcon}
                     />
-                    <Text style={{fontSize: 22}}>{_currentDate()}</Text>
+                    <Text
+                      style={{
+                        fontSize: 22,
+                        color: '#777777',
+                        fontWeight: 'bold',
+                      }}>
+                      {_currentDate()}
+                    </Text>
                   </View>
                   <View style={styles.createReport}>
                     <View style={{justifyContent: 'center'}}>
@@ -168,7 +188,8 @@ export default class Reports extends React.Component {
                                 </Text>
                               </View>
                               <TouchableOpacity
-                                onPress={() => this.reportDialogShow(true)}>
+                                onPress={() => this.reportDialogShow(true)}
+                                style={styles.reportTypeCon}>
                                 <View style={styles.cardView}>
                                   <Text style={{fontSize: 18}}>Report</Text>
                                   <Text style={{fontSize: 10}}>
@@ -176,7 +197,9 @@ export default class Reports extends React.Component {
                                   </Text>
                                 </View>
                               </TouchableOpacity>
-                              <TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() => this.setModalEod(true)}
+                                style={styles.reportTypeCon}>
                                 <View style={styles.cardView}>
                                   <Text style={{fontSize: 18}}>EOD</Text>
                                   <Text style={{fontSize: 10}}>
@@ -184,7 +207,12 @@ export default class Reports extends React.Component {
                                   </Text>
                                 </View>
                               </TouchableOpacity>
-                              <TouchableOpacity>
+                              <Eod
+                                openModal={this.state.openModalEod}
+                                closeModal={this.setModalEod}
+                                reportDialogShow={this.reportDialogShow}
+                              />
+                              <TouchableOpacity style={styles.reportTypeCon}>
                                 <View style={styles.cardView}>
                                   <Text style={{fontSize: 18}}>Status</Text>
                                   <Text style={{fontSize: 10}}>
@@ -193,7 +221,8 @@ export default class Reports extends React.Component {
                                 </View>
                               </TouchableOpacity>
                               <TouchableOpacity
-                                onPress={() => this.setModalDayplan(true)}>
+                                onPress={() => this.setModalDayplan(true)}
+                                style={styles.reportTypeCon}>
                                 <View style={styles.cardView}>
                                   <Text style={{fontSize: 18}}>Day Plan</Text>
                                   <Text style={{fontSize: 10}}>
@@ -382,6 +411,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
     marginBottom: 12,
   },
+  usernameText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   currentdate: {
     flex: 1,
     flexDirection: 'row',
@@ -400,7 +433,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   userTitle: {
-    fontSize: 16,
+    fontSize: 22,
+    fontWeight: 'bold',
   },
   greenButtonWidget: {
     height: 50,
@@ -465,7 +499,7 @@ const styles = StyleSheet.create({
   dialogContainer: {
     width: '90%',
     backgroundColor: '#f0f0f0',
-    padding: 10,
+    //padding: 10,
   },
 
   dialogTitle: {
@@ -482,6 +516,7 @@ const styles = StyleSheet.create({
   dataEntryView: {
     marginTop: 10,
     marginBottom: 10,
+    width: '100%',
   },
   dataEntryInputView: {
     marginTop: 10,
@@ -503,7 +538,13 @@ const styles = StyleSheet.create({
   },
   reportDialogContent: {
     alignItems: 'center',
+    justifyContent: 'center',
     width: '100%',
+  },
+  reportTypeCon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '90%',
   },
   cardView: {
     alignItems: 'center',
@@ -535,5 +576,5 @@ const styles = StyleSheet.create({
     color: '#007bff',
     fontWeight: 'bold',
     fontSize: 14,
-  }
+  },
 });
