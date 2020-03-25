@@ -24,6 +24,8 @@ import {_retrieveData} from '../utils/storage';
 import {_currentDate} from '../utils/dateSetter';
 import Dayplan from '../components/Modals/Dayplan';
 import Eod from '../components/Modals/Eod';
+import Status from '../components/Modals/Status';
+import Weekly from '../components/Modals/Weekly';
 import {globalStyles} from '../styles/global';
 
 export default class Reports extends React.Component {
@@ -36,7 +38,13 @@ export default class Reports extends React.Component {
       token: '',
       openModalDayplan: false,
       openModalEod: false,
+      openModalStatus: false,
+      openModalWeekly: false,
       dayreports: [],
+      ctrDay: '',
+      ctrMonth: '',
+      ctrYear: '',
+      ctrType: '',
     };
   }
 
@@ -103,6 +111,45 @@ export default class Reports extends React.Component {
 
   setModalEod = open => {
     this.setState({openModalEod: open});
+  };
+
+  setModalStatus = open => {
+    this.setState({openModalStatus: open});
+  };
+
+  setModalWeekly = open => {
+    this.setState({openModalWeekly: open});
+  };
+
+  createTeamReport = () => {
+    var apiUrl = 'https://welove-intranet-backend.herokuapp.com';
+    let report = {
+      day: this.state.ctrDay,
+      month: this.state.ctrMonth,
+      year: this.state.ctrYear,
+      type: this.state.ctrType,
+    };
+
+    //console.log('report data: ' + JSON.stringify(report));
+    this.reportTeamDialogShow(false);
+    fetch(apiUrl + '/reportsteam/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': this.state.token,
+      },
+      body: report,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.reportTeamDialogShow(false);
+      });
+    this.setState({
+      ctrDay: '',
+      ctrMonth: '',
+      ctrYear: '',
+      ctrType: '',
+    });
   };
 
   render() {
@@ -188,7 +235,7 @@ export default class Reports extends React.Component {
                                 </Text>
                               </View>
                               <TouchableOpacity
-                                onPress={() => this.reportDialogShow(true)}
+                                onPress={() => this.setModalWeekly(true)}
                                 style={styles.reportTypeCon}>
                                 <View style={styles.cardView}>
                                   <Text style={{fontSize: 18}}>Report</Text>
@@ -197,6 +244,11 @@ export default class Reports extends React.Component {
                                   </Text>
                                 </View>
                               </TouchableOpacity>
+                              <Weekly
+                                openModal={this.state.openModalWeekly}
+                                closeModal={this.setModalWeekly}
+                                reportDialogShow={this.reportDialogShow}
+                              />
                               <TouchableOpacity
                                 onPress={() => this.setModalEod(true)}
                                 style={styles.reportTypeCon}>
@@ -212,7 +264,9 @@ export default class Reports extends React.Component {
                                 closeModal={this.setModalEod}
                                 reportDialogShow={this.reportDialogShow}
                               />
-                              <TouchableOpacity style={styles.reportTypeCon}>
+                              <TouchableOpacity
+                                onPress={() => this.setModalStatus(true)}
+                                style={styles.reportTypeCon}>
                                 <View style={styles.cardView}>
                                   <Text style={{fontSize: 18}}>Status</Text>
                                   <Text style={{fontSize: 10}}>
@@ -220,6 +274,11 @@ export default class Reports extends React.Component {
                                   </Text>
                                 </View>
                               </TouchableOpacity>
+                              <Status
+                                openModal={this.state.openModalStatus}
+                                closeModal={this.setModalStatus}
+                                reportDialogShow={this.reportDialogShow}
+                              />
                               <TouchableOpacity
                                 onPress={() => this.setModalDayplan(true)}
                                 style={styles.reportTypeCon}>
@@ -272,25 +331,40 @@ export default class Reports extends React.Component {
                               </TouchableOpacity>
                             </View>
                             <View style={styles.dialogContent}>
+                              <Text style={globalStyles.dialogTitle}>
+                                Create An Entry
+                              </Text>
                               <View style={styles.dataEntryView}>
                                 <Text>Day :</Text>
                                 <TextInput
-                                  value={this.props.entry_input_day}
+                                  value={this.state.ctrDay}
+                                  onChangeText={text =>
+                                    this.setState({ctrDay: text})
+                                  }
                                   style={styles.dataEntryInputView}
+                                  keyboardType={'numeric'}
                                 />
                               </View>
                               <View style={styles.dataEntryView}>
                                 <Text>Month :</Text>
                                 <TextInput
-                                  value={this.props.entry_input_month}
+                                  value={this.state.ctrMonth}
+                                  onChangeText={text =>
+                                    this.setState({ctrMonth: text})
+                                  }
                                   style={styles.dataEntryInputView}
+                                  keyboardType={'numeric'}
                                 />
                               </View>
                               <View style={styles.dataEntryView}>
                                 <Text>Year :</Text>
                                 <TextInput
-                                  value={this.props.entry_input_year}
+                                  value={this.state.ctrYear}
+                                  onChangeText={text =>
+                                    this.setState({ctrYear: text})
+                                  }
                                   style={styles.dataEntryInputView}
+                                  keyboardType={'numeric'}
                                 />
                               </View>
                               <View style={styles.dataEntryView}>
@@ -303,9 +377,20 @@ export default class Reports extends React.Component {
                                     marginTop: 10,
                                   }}>
                                   <Picker
-                                    selectedValue={this.state.user}
-                                    onValueChange={this.updateUser}
+                                    selectedValue={this.state.ctrType}
+                                    onValueChange={(itemValue, itemIndex) =>
+                                      this.setState({ctrType: itemValue})
+                                    }
                                     style={styles.pickerEntryType}>
+                                    <Picker.Item
+                                      label=""
+                                      value=""
+                                      style={{
+                                        borderWidth: 1,
+                                        borderColor: '#808080',
+                                        backgroundColor: 'white',
+                                      }}
+                                    />
                                     <Picker.Item
                                       label="Report"
                                       value="report"
@@ -341,7 +426,7 @@ export default class Reports extends React.Component {
                               <View style={styles.confirmButton}>
                                 <TouchableOpacity
                                   style={styles.greenButtonWidget}
-                                  onPress={() => {}}>
+                                  onPress={() => this.createTeamReport()}>
                                   <Text style={styles.greenButton}>
                                     Create Entry
                                   </Text>
@@ -523,12 +608,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#808080',
     backgroundColor: 'white',
-    padding: 0,
+    padding: 4,
   },
   pickerEntryType: {
     borderColor: '#808080',
     borderWidth: 1,
-    padding: 0,
+    padding: 4,
     margin: 0,
     height: 32,
   },
