@@ -152,6 +152,7 @@ export const globalStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   dialogTitle: {
+    marginTop: 32,
     fontWeight: 'bold',
     fontSize: 32,
   },

@@ -20,13 +20,13 @@ import {styles} from './styles';
 
 const initHTML = '';
 
-export default function Eod({openModal, closeModal, reportDialogShow}) {
+export default function Status({openModal, closeModal, reportDialogShow}) {
   const [selectedDateId, setSelectedDateId] = useState();
   const [selected, setSelected] = useState(false);
   const [dates, setDates] = useState([]);
 
   var apiUrl =
-    'https://welove-intranet-backend.herokuapp.com/reportsteam/type/eod';
+    'https://welove-intranet-backend.herokuapp.com/reportsteam/type/status';
 
   useEffect(() => {
     fetch(apiUrl)
@@ -39,13 +39,15 @@ export default function Eod({openModal, closeModal, reportDialogShow}) {
 
   const save = async () => {
     let text = await this.richText.getContentHtml();
+    let token = await _retrieveData('token');
     let user = await _retrieveData('user');
     let userId = user._id;
-    let type = 'eod';
+    let type = 'dayplan';
     let status = null;
     let reportsTeamId = selectedDateId;
 
     let report = {
+      token: token,
       text: text,
       userId: userId,
       teamId: reportsTeamId,
@@ -96,7 +98,7 @@ export default function Eod({openModal, closeModal, reportDialogShow}) {
                 </View>
               </View>
               <View style={globalStyles.dialogtitleContainer}>
-                <Text style={globalStyles.dialogTitle}>EOD</Text>
+                <Text style={[globalStyles.dialogTitle, {marginBottom: 24}]}>Status</Text>
                 <View style={styles.dateContainer}>
                   {dates &&
                     dates.map(date => {
@@ -119,7 +121,6 @@ export default function Eod({openModal, closeModal, reportDialogShow}) {
                       );
                     })}
                 </View>
-
                 <View>
                   <ScrollView style={styles.scroll}>
                     <RichEditor
