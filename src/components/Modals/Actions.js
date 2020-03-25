@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 
 export const CreateReport = report => {
   console.log('Creating report');
@@ -13,33 +13,19 @@ export const CreateReport = report => {
   };
 
   console.log('reportDetails: ' + JSON.stringify(reportDetails));
-
-  // fetch(apiUrl, {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'x-access-token': report.token,
-  //   },
-  //   body: reportDetails,
-  // })
-  //   .then(response => {
-  //     return response.json();
-  //   })
-  //   .then(responseData => {
-  //     report.closeFormModal(false);
-  //   });
-};
-
-export const getReportDates = type => {
-  const [dates, setDates] = useState([]);
-  var apiUrl = 'https://welove-intranet-backend.herokuapp.com/timelineentry/all';
-
-  useEffect(() =>
-    fetch(apiUrl)
-      .then(res => res.json())
-      .then(res => setDates(dates))
-      .catch((err) => console.log(err))
-  );
-
-  return dates;
+  fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-access-token': report.token,
+    },
+    body: reportDetails,
+  })
+    .then(response => {
+      return response.json();
+    })
+    .then(responseData => {
+      console.log('==========> Successfully created report');
+      //report.closeFormModal(false);
+    });
 };
