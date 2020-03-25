@@ -6,6 +6,7 @@ import {
   StatusBar,
   SafeAreaView,
   ScrollView,
+  TouchableOpacity,
   Text,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -20,24 +21,45 @@ class HomeScreen extends React.Component {
     super(props);
     this.state = {
       user: {},
-      token: '',
+      token: _retrieveData('token'),
       dayplan: [],
       eodplan: [],
-      weeklyObljectives: [],
+      weeklyObjectives: [],
     };
   }
 
-  expandView(type){
-    
-  }
+  // expandView(type){
+  // }
 
   componentDidMount() {
     let baseUrl = 'https://welove-intranet-backend.herokuapp.com';
     let userUrl = baseUrl + '/contas/id/';
     let reportUrl = baseUrl + '/reports/id/';
+    let objectivesUrl = baseUrl + '/objectives/weekNumber/';
     let userId;
+    let weekNumber = Moment().isoWeek();
     _retrieveData('user').then(user => this.setState({user: user}));
-    _retrieveData('token').then(token => this.setState({token: token}));
+    _retrieveData('token').then(token => {
+      this.setState({token: token});
+      fetch(objectivesUrl + weekNumber, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'x-access-token': token,
+          Authorization: 'Bearer ' + token,
+        },
+      })
+        .then(response => response.json())
+        .then(responseJson => {
+          //console.log(JSON.stringify(responseJson.data));
+          this.setState(prevState => ({
+            weeklyObjectives: [
+              ...prevState.weeklyObjectives,
+              responseJson.data,
+            ],
+          }));
+        });
+    });
 
     fetch(baseUrl + '/timelineentry/all')
       .then(response => response.json())
