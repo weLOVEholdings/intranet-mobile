@@ -14,7 +14,8 @@ import Header from '../components/Header/Header';
 import Login from './Login';
 import {_retrieveData} from '../utils/storage';
 import ProgressBar from '@kcodev/react-native-progress-bar';
-
+import {Collapse,CollapseHeader, CollapseBody, AccordionList} from 'accordion-collapse-react-native';
+import { Thumbnail, List, ListItem, Separator } from 'native-base';
 class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -145,19 +146,18 @@ class HomeScreen extends React.Component {
                       <Text style={{fontSize: 28}}>Hello, {this.state.user.name}</Text>
                     </View>
                     <View style={styles.context}>
-                      <TouchableOpacity onPress={()=>{
-                        this.expandView("weekly")
-                      }}>
-                        <View style={styles.weeklyPart}>
-                          <Text style={{fontSize: 17, borderBottomWidth: 1, borderColor: '#00000032' }}>Weekly Goals</Text>
-                        </View>
-                      </TouchableOpacity>
-                        <View style={styles.progressStatus}>
+                      <Collapse>
+                        <CollapseHeader>
+                          <Separator bordered>
+                            <Text>Weekly Report</Text>
+                          </Separator>
+                        </CollapseHeader>
+                        <CollapseBody>
+                          <View style={styles.progressStatus}>
                           <View style={styles.objectiveProgress}>
                             <Text style={styles.objectiveProgressTitle}>OBJECTIVE</Text>
                             <View style={styles.objectiveProgressDescription}>
                               <Text style={styles.objectiveProgressDescriptionContext}>Complete INTRANET mobile application Start Work on courses module Start work on timeline module</Text>
-                              <Text>this.state.weeklyObljectives</Text>
                             </View>
                           </View>
                           <View style={styles.progressBar}>
@@ -165,22 +165,52 @@ class HomeScreen extends React.Component {
                             <ProgressBar value={70} maxValue={100} backgroundColorOnComplete="#123123" backgroundColor="#987987" />
                           </View>
                         </View>
+                        </CollapseBody>
+                      </Collapse>
 
+                      <Collapse>
+                        <CollapseHeader>
+                          <Separator bordered>
+                            <Text>Day Of Plan</Text>
+                          </Separator>
+                        </CollapseHeader>
+                        <CollapseBody>
+                          <View style={styles.progressStatus}>
+                            <View style={styles.objectiveProgress}>
+                              <Text style={styles.objectiveProgressTitle}>OBJECTIVE</Text>
+                              <View style={styles.objectiveProgressDescription}>
+                                <Text style={styles.objectiveProgressDescriptionContext}>Complete INTRANET mobile application Start Work on courses module Start work on timeline module</Text>
+                              </View>
+                            </View>
+                            <View style={styles.progressBar}>
+                              <Text style={styles.progressBarStatus}>Progress: 70%</Text>
+                              <ProgressBar value={70} maxValue={100} backgroundColorOnComplete="#123123" backgroundColor="#987987" />
+                            </View>
+                          </View>
+                        </CollapseBody>
+                      </Collapse>
 
-                      <TouchableOpacity onPress={()=>{
-                        this.expandView("dop")
-                      }}>
-                        <View style={styles.dayPart}>
-                          <Text style={{fontSize: 17}}>Day Plans</Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={()=>{
-                        this.expandView("eod")
-                      }}>
-                        <View style={styles.eodPart}>
-                          <Text style={{fontSize: 17}}>End of the day</Text>
-                        </View>
-                      </TouchableOpacity>
+                      <Collapse>
+                        <CollapseHeader>
+                          <Separator bordered>
+                            <Text>End of day</Text>
+                          </Separator>
+                        </CollapseHeader>
+                        <CollapseBody>
+                          <View style={styles.progressStatus}>
+                            <View style={styles.objectiveProgress}>
+                              <Text style={styles.objectiveProgressTitle}>OBJECTIVE</Text>
+                              <View style={styles.objectiveProgressDescription}>
+                                <Text style={styles.objectiveProgressDescriptionContext}>Complete INTRANET mobile application Start Work on courses module Start work on timeline module</Text>
+                              </View>
+                            </View>
+                            <View style={styles.progressBar}>
+                              <Text style={styles.progressBarStatus}>Progress: 70%</Text>
+                              <ProgressBar value={70} maxValue={100} backgroundColorOnComplete="#123123" backgroundColor="#987987" />
+                            </View>
+                          </View>
+                        </CollapseBody>
+                      </Collapse>
                     </View>
                   </View>
                 </View>
