@@ -30,8 +30,8 @@ class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: {},
-      token: _retrieveData('token'),
+      user:{},
+      token: '',
       dayplan: [],
       eodplan: [],
       weeklyObjectives: [],
@@ -64,12 +64,15 @@ class HomeScreen extends React.Component {
         .then(response => response.json())
         .then(responseJson => {
           //console.log(JSON.stringify(responseJson.data));
-          this.setState(prevState => ({
-            weeklyObjectives: [
-              ...prevState.weeklyObjectives,
-              responseJson.data,
-            ],
-          }));
+          responseJson.data.map(object => {
+            let obj = {
+              title: object.title,
+              progress: object.progress,
+            };
+            this.setState(prevState => ({
+              weeklyObjectives: [...prevState.weeklyObjectives, obj],
+            }));
+          });
         });
     });
 
@@ -135,10 +138,9 @@ class HomeScreen extends React.Component {
   };
 
   render() {
-    if (this.state.token) {
       return (
         <>
-          <StatusBar backgroundColor="transparent" />
+          <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "transparent" translucent = {true}/>
           <SafeAreaView>
             <ScrollView
               contentInsetAdjustmentBehavior="automatic"
@@ -149,7 +151,9 @@ class HomeScreen extends React.Component {
                   <View style={styles.main}>
                     <Text style={{fontSize: 18}}>Day OverView</Text>
                     <View style={styles.userpart}>
-                      <Text style={{fontSize: 28}}>Hello, {this.state.user.name}</Text>
+                      <Text style={{fontSize: 28}}>
+                        Hello, {this.state.user ? this.state.user.name : null}
+                      </Text>
                     </View>
                     <View style={styles.context}>
                       <Collapse isCollapsed={this.state.weeklyObjectives.length > 0 ? true : false}>
@@ -159,7 +163,7 @@ class HomeScreen extends React.Component {
                           </Separator>
                         </CollapseHeader>
                         <CollapseBody>
-                          {this.state.weeklyObljectives && this.state.weeklyObljectives.map(obj => {
+                          {this.state.weeklyObjectives.length > 0 && this.state.weeklyObjectives.map(obj => {
                             return (
                               <View style={styles.progressStatus}>
                                 <View style={styles.objectiveProgress}>
@@ -306,9 +310,6 @@ class HomeScreen extends React.Component {
           </SafeAreaView>
         </>
       );
-    } else {
-      return <Login />;
-    }
   }
 }
 
