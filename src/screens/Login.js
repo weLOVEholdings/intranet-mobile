@@ -13,6 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 import HeaderImage from '../shared/weLoveImage';
 import FlatButton from '../shared/button';
 import {_storeData} from '../utils/storage';
+import {_retrieveData} from '../utils/storage';
 import {globalStyles} from '../styles/global';
 
 const loginSchema = yup.object({
@@ -28,6 +29,12 @@ const loginSchema = yup.object({
 export default function Login({navigation}) {
   const [loading, setLoading] = useState(false);
   const nav = useNavigation();
+  _retrieveData('token').then(tkn => {
+    if (typeof tkn === 'string') {
+      navigation.navigate('Home');
+      return;
+    }
+  });
 
   const LoginSubmit = ({email, password}) => {
     const apiUrl = 'https://welove-intranet-backend.herokuapp.com/contas/login';
@@ -67,7 +74,7 @@ export default function Login({navigation}) {
         _storeData('user', responseData.data);
         _storeData('token', responseData.token);
         Alert.alert('Hi! ' + responseData.data.name);
-        nav.navigate('Home');
+        navigation.navigate('Home');
       });
   };
 

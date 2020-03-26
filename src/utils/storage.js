@@ -27,6 +27,7 @@ export const _retrieveData = async key => {
         return item;
       }
     }
+    return '';
   } catch (error) {
     console.log('error in retrieving data: ' + error);
   }

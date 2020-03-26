@@ -19,20 +19,13 @@ import Companies from './src/screens/Companies';
 import Sales from './src/screens/Sales';
 import Login from './src/screens/Login';
 import Register from './src/screens/Register';
-import {_retrieveData} from './src/utils/storage';
 
 const Stack = createStackNavigator();
-const getToken = async () => {
-  let token = await _retrieveData('token');
-  return token;
-};
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName={getToken ? 'Home' : 'Login'}
-        headerMode="none">
+      <Stack.Navigator initialRouteName="Login" headerMode="none">
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Timeline" component={Timeline} />
         <Stack.Screen name="Reports" component={Reports} />
