@@ -7,7 +7,9 @@ export default StyleSheet.create({
   logo_icon: {
     resizeMode: 'contain',
     width: 183,
-    height: 100,
+    height: 75,
+    marginBottom: 0,
+    marginTop: 0,
   },
   container: {
     flex: 1,
