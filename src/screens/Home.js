@@ -20,9 +20,7 @@ import {
   Collapse,
   CollapseHeader,
   CollapseBody,
-  AccordionList,
 } from 'accordion-collapse-react-native';
-import {Thumbnail, List, ListItem, Separator} from 'native-base';
 import {_reportDate} from '../utils/dateSetter';
 import {globalStyles} from '../styles/global';
 
@@ -53,28 +51,31 @@ class HomeScreen extends React.Component {
     _retrieveData('user').then(user => this.setState({user: user}));
     _retrieveData('token').then(token => {
       this.setState({token: token});
-      fetch(objectivesUrl + weekNumber, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'x-access-token': token,
-          Authorization: 'Bearer ' + token,
-        },
-      })
-        .then(response => response.json())
-        .then(responseJson => {
-          //console.log(JSON.stringify(responseJson.data));
-          responseJson.data.map(object => {
-            let obj = {
-              title: object.title,
-              progress: object.progress,
-              id: object._id,
-            };
-            this.setState(prevState => ({
-              weeklyObjectives: [...prevState.weeklyObjectives, obj],
-            }));
+
+      if (token) {
+        fetch(objectivesUrl + weekNumber, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'x-access-token': token,
+            Authorization: 'Bearer ' + token,
+          },
+        })
+          .then(response => response.json())
+          .then(responseJson => {
+            //console.log(JSON.stringify(responseJson.data));
+            responseJson.data.map(object => {
+              let obj = {
+                title: object.title,
+                progress: object.progress,
+                id: object._id,
+              };
+              this.setState(prevState => ({
+                weeklyObjectives: [...prevState.weeklyObjectives, obj],
+              }));
+            });
           });
-        });
+        }
     });
 
     let now = Moment();
