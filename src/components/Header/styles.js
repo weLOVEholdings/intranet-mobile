@@ -1,6 +1,9 @@
 import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
+  container:{
+  marginBottom: 0
+  },
   logo_icon: {
     resizeMode: 'contain',
     width: 183,
