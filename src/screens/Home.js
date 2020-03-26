@@ -149,20 +149,20 @@ class HomeScreen extends React.Component {
                 <Header />
                 <View style={styles.sectionContainer}>
                   <View style={styles.main}>
-                    <Text style={{fontSize: 18}}>Day OverView</Text>
+                    <Text style={{fontSize: 22.4}}>Day OverView</Text>
                     <View style={styles.userpart}>
-                      <Text style={{fontSize: 28}}>
+                      <Text style={{fontSize: 28.8}}>
                         Hello, {this.state.user ? this.state.user.name : null}
                       </Text>
                     </View>
                     <View style={styles.context}>
                       <Collapse isCollapsed={this.state.weeklyObjectives.length > 0 ? true : false}>
-                        <CollapseHeader style={{backgroundColor: '#fff'}}>
-                          <Separator bordered>
-                            <Text>Weekly Report</Text>
+                        <CollapseHeader style={{backgroundColor: '#fff', marginLeft: 0}}>
+                          <Separator style={{backgroundColor:'white', paddingLeft: 0, marginLeft: 0, borderBottomWidth: 1, borderColor: '#cdcdcd'}}>
+                            <Text style={{fontSize: 17.6}}>Weekly goals</Text>
                           </Separator>
                         </CollapseHeader>
-                        <CollapseBody>
+                        <CollapseBody style={{padding:20}}>
                           {this.state.weeklyObjectives.length > 0 && this.state.weeklyObjectives.map(obj => {
                             return (
                               <View style={styles.progressStatus}>
@@ -186,12 +186,12 @@ class HomeScreen extends React.Component {
                       </Collapse>
 
                       <Collapse isCollapsed={this.state.dayplan.length > 0 ? true : false}>
-                        <CollapseHeader>
-                          <Separator bordered>
-                            <Text>Day Of Plan</Text>
+                        <CollapseHeader style={{marginLeft: 0}}>
+                          <Separator style={{backgroundColor:'white', paddingLeft: 0, marginLeft: 0, borderBottomWidth: 1, borderColor: '#cdcdcd'}}>
+                            <Text style={{fontSize: 17.6}}>Day Of Plan</Text>
                           </Separator>
                         </CollapseHeader>
-                        <CollapseBody style={{marginTop: 24}}>
+                        <CollapseBody style={{padding:20}}>
                           {this.state.dayplan && this.state.dayplan.map(item => {
                             return (
                               <View style={globalStyles.bottomMargin}>
@@ -245,12 +245,12 @@ class HomeScreen extends React.Component {
                       </Collapse>
 
                       <Collapse isCollapsed={this.state.eodplan.length > 0 ? true : false}>
-                        <CollapseHeader style={{marginBottom: 24}}>
-                          <Separator bordered>
-                            <Text>End of day</Text>
+                        <CollapseHeader style={{marginLeft: 0}}>
+                          <Separator style={{backgroundColor:'white', paddingLeft: 0, marginLeft: 0, borderBottomWidth: 1, borderColor: '#cdcdcd'}}>
+                            <Text style={{fontSize: 17.6}}>End of day</Text>
                           </Separator>
                         </CollapseHeader>
-                        <CollapseBody>
+                        <CollapseBody style={{padding:20}}>
                         {this.state.eodplan && this.state.eodplan.map(item => {
                           return (
                             <View style={[globalStyles.bottomMargin]}>
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   sectionContainer: {
-    marginTop: 32,
+    marginTop: 12,
     paddingHorizontal: 24,
   },
   sectionTitle: {
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   progressStatus: {
-    marginTop: 20,
+    
   },
   objectiveProgress: {
     marginTop: 5,
@@ -381,5 +381,8 @@ const styles = StyleSheet.create({
   },
   progressBarStatus: {
     marginBottom: 10,
+  },
+  userpart:{
+    marginBottom: 50
   },
 });

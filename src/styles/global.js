@@ -2,6 +2,9 @@ import {StyleSheet} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 export const globalStyles = StyleSheet.create({
+  Header: {
+    marginBottom: 0
+  },
   container: {
     flex: 1,
     paddingTop: 40,

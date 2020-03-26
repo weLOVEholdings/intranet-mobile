@@ -18,7 +18,7 @@ export default function IconButtonWithText({
         onPress={() => navigation.navigate(navigationItemTitle)}>
         <View style={iconButtonWithTextStyles.navigationButton}>
           <View style={iconButtonWithTextStyles.grayCircle}>
-            <FontAwesome5 name={navigationItemIcon} size={25} color="#6d6d6d" />
+            <FontAwesome5 name={navigationItemIcon} size={16} color="#6d6d6d" />
           </View>
         </View>
       </TouchableOpacity>
