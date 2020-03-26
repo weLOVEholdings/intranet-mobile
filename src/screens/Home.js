@@ -68,6 +68,7 @@ class HomeScreen extends React.Component {
             let obj = {
               title: object.title,
               progress: object.progress,
+              id: object._id,
             };
             this.setState(prevState => ({
               weeklyObjectives: [...prevState.weeklyObjectives, obj],
@@ -138,122 +139,75 @@ class HomeScreen extends React.Component {
   };
 
   render() {
-      return (
-        <>
-          <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "transparent" translucent = {true}/>
-          <SafeAreaView>
-            <ScrollView
-              contentInsetAdjustmentBehavior="automatic"
-              style={styles.scrollView}>
-              <View style={styles.body}>
-                <Header />
-                <View style={styles.sectionContainer}>
-                  <View style={styles.main}>
-                    <Text style={{fontSize: 18}}>Day OverView</Text>
-                    <View style={styles.userpart}>
-                      <Text style={{fontSize: 28}}>
-                        Hello, {this.state.user ? this.state.user.name : null}
-                      </Text>
-                    </View>
-                    <View style={styles.context}>
-                      <Collapse isCollapsed={this.state.weeklyObjectives.length > 0 ? true : false}>
-                        <CollapseHeader style={{backgroundColor: '#fff'}}>
-                          <Separator bordered>
-                            <Text>Weekly Report</Text>
-                          </Separator>
-                        </CollapseHeader>
-                        <CollapseBody>
-                          {this.state.weeklyObjectives.length > 0 && this.state.weeklyObjectives.map(obj => {
-                            return (
-                              <View style={styles.progressStatus}>
-                                <View style={styles.objectiveProgress}>
-                                  <Text style={styles.objectiveProgressTitle}>
-                                    OBJECTIVE
-                                  </Text>
-                                  <View style={styles.objectiveProgressDescription}>
-                                    <HTML html={obj.title} />
-                                  </View>
-                                </View>
-                                <View style={styles.progressBar}>
-                                  <Text style={styles.progressBarStatus}>
-                                    Progress: {obj.progress}%
-                                  </Text>
-                                  <ProgressBar value={obj.progress} maxValue={100} backgroundColorOnComplete="#123123" backgroundColor="#987987" />
-                                </View>
-                              </View>);
-                          })}
-                        </CollapseBody>
-                      </Collapse>
-
-                      <Collapse isCollapsed={this.state.dayplan.length > 0 ? true : false}>
-                        <CollapseHeader>
-                          <Separator bordered>
-                            <Text>Day Of Plan</Text>
-                          </Separator>
-                        </CollapseHeader>
-                        <CollapseBody style={{marginTop: 24}}>
-                          {this.state.dayplan && this.state.dayplan.map(item => {
-                            return (
-                              <View style={globalStyles.bottomMargin}>
-                                <View style={globalStyles.timelineHeaderContainer}>
-                                  <View style={globalStyles.timelineItemImg}>
-                                    {item.userpic ? (
-                                      <Image
-                                        style={globalStyles.imageRound}
-                                        source={{
-                                          uri: item.userpic,
-                                        }}
-                                      />
-                                    ) : (
-                                      <Image
-                                        style={globalStyles.imageRound}
-                                        source={require('../assets/images/unknown.jpg')}
-                                      />
-                                    )}
-                                  </View>
-                                  <View style={globalStyles.timelineUserDetails}>
-                                    <View style={globalStyles.timelineHeaderContainer}>
-                                      <View style={globalStyles.timelineTwoColumn}>
-                                        <Text style={globalStyles.boldText}>
-                                          {item.username}
-                                        </Text>
-                                      </View>
-                                      <View style={globalStyles.reportTypeContainer}>
-                                        <Text style={globalStyles.boldText}>
-                                          {item.type
-                                            ? this.typeFormatter(item.type)
-                                            : null}
-                                        </Text>
-                                      </View>
-                                    </View>
-                                    <View style={globalStyles.timelineHeaderContainer}>
-                                      <Text style={globalStyles.boldText}>
-                                        {_reportDate(item.createdAt)}
-                                      </Text>
-                                    </View>
-                                  </View>
-                                </View>
-                                <View style={globalStyles.timelineCard}>
-                                  {item.text ? (
-                                    <HTML html={item.text} />
-                                  ) : null}
+    return (
+      <View style={{
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+      }}>
+        <StatusBar
+          hidden={false}
+          backgroundColor="#d53622"
+          translucent={true}
+        />
+        <SafeAreaView>
+          <ScrollView
+            contentInsetAdjustmentBehavior="automatic"
+            style={styles.scrollView}>
+            <View style={styles.body}>
+              <Header />
+              <View style={styles.sectionContainer}>
+                <View style={styles.main}>
+                  <Text style={[globalStyles.customFont, {fontSize: 23, fontWeight: '500'}]}>Day overview</Text>
+                  <View style={styles.userpart}>
+                    <Text style={[globalStyles.customFont, {fontSize: 28, fontWeight: 'bold', color: '#212529', marginBottom: 50,}]}>
+                      Hello, {this.state.user ? this.state.user.name : null}
+                    </Text>
+                  </View>
+                  <View style={styles.context}>
+                    <Collapse isCollapsed={this.state.weeklyObjectives.length > 0 ? true : false} style={styles.collapseContainer}>
+                      <CollapseHeader style={styles.collapseHeader}>
+                        <View style={styles.separator}>
+                          <Text style={[globalStyles.customFont, styles.collapseTitle]}>Weekly Goals</Text>
+                        </View>
+                      </CollapseHeader>
+                      <CollapseBody style={styles.collapseBody}>
+                        {this.state.weeklyObjectives.length > 0 && this.state.weeklyObjectives.map(obj => {
+                          return (
+                            <View style={styles.progressStatus} key={obj.id}>
+                              <View style={styles.objectiveProgress}>
+                                <Text style={[globalStyles.customFont, styles.objectiveProgressTitle]}>
+                                  OBJECTIVE
+                                </Text>
+                                <View style={styles.objectiveProgressDescription}>
+                                  <HTML html={obj.title} style={[globalStyles.customFont, {color: '#4c4c4c', fontWeight: 'bold'}]}/>
                                 </View>
                               </View>
-                            )
-                          })}
-                        </CollapseBody>
-                      </Collapse>
+                              <View style={styles.progressBar}>
+                                <Text style={globalStyles.customFont, [styles.progressBarStatus]}>
+                                  Progress: {obj.progress}%
+                                </Text>
+                                  <ProgressBar
+                                    value={obj.progress}
+                                    maxValue={100}
+                                    backgroundColorOnComplete="#123123"
+                                    backgroundColor="#8ab4f8"
+                                    borderRadius={0}
+                                  />
+                              </View>
+                            </View>);
+                        })}
+                      </CollapseBody>
+                    </Collapse>
 
-                      <Collapse isCollapsed={this.state.eodplan.length > 0 ? true : false}>
-                        <CollapseHeader style={{marginBottom: 24}}>
-                          <Separator bordered>
-                            <Text>End of day</Text>
-                          </Separator>
-                        </CollapseHeader>
-                        <CollapseBody>
-                        {this.state.eodplan && this.state.eodplan.map(item => {
+                    <Collapse isCollapsed={this.state.dayplan.length > 0 ? true : false} style={styles.collapseContainer}>
+                      <CollapseHeader style={styles.collapseHeader}>
+                        <View style={styles.separator}>
+                          <Text style={globalStyles.customFont, [styles.collapseTitle]}>Day Of Plan</Text>
+                        </View>
+                      </CollapseHeader>
+                      <CollapseBody style={{marginTop: 24}}>
+                        {this.state.dayplan && this.state.dayplan.map(item => {
                           return (
-                            <View style={[globalStyles.bottomMargin]}>
+                            <View style={globalStyles.bottomMargin} key={item.id}>
                               <View style={globalStyles.timelineHeaderContainer}>
                                 <View style={globalStyles.timelineItemImg}>
                                   {item.userpic ? (
@@ -273,12 +227,12 @@ class HomeScreen extends React.Component {
                                 <View style={globalStyles.timelineUserDetails}>
                                   <View style={globalStyles.timelineHeaderContainer}>
                                     <View style={globalStyles.timelineTwoColumn}>
-                                      <Text style={globalStyles.boldText}>
+                                      <Text style={[globalStyles.customFont, globalStyles.boldText]}>
                                         {item.username}
                                       </Text>
                                     </View>
                                     <View style={globalStyles.reportTypeContainer}>
-                                      <Text style={globalStyles.boldText}>
+                                      <Text style={[globalStyles.customFont, globalStyles.boldText]}>
                                         {item.type
                                           ? this.typeFormatter(item.type)
                                           : null}
@@ -286,7 +240,7 @@ class HomeScreen extends React.Component {
                                     </View>
                                   </View>
                                   <View style={globalStyles.timelineHeaderContainer}>
-                                    <Text style={globalStyles.boldText}>
+                                    <Text style={[globalStyles.customFont, globalStyles.boldText]}>
                                       {_reportDate(item.createdAt)}
                                     </Text>
                                   </View>
@@ -294,22 +248,81 @@ class HomeScreen extends React.Component {
                               </View>
                               <View style={globalStyles.timelineCard}>
                                 {item.text ? (
-                                  <HTML html={item.text} />
+                                  <HTML html={item.text} style={[globalStyles.customFont, {color: '#4c4c4c', fontWeight: 'bold'}]}/>
                                 ) : null}
                               </View>
                             </View>
                           )
                         })}
-                        </CollapseBody>
-                      </Collapse>
-                    </View>
+                      </CollapseBody>
+                    </Collapse>
+
+                    <Collapse isCollapsed={this.state.eodplan.length > 0 ? true : false}  style={[styles.collapseContainer, {marginBottom: 40}]}>
+                      <CollapseHeader style={styles.collapseHeader}>
+                        <View style={styles.separator}>
+                          <Text style={[globalStyles.customFont, styles.collapseTitle]}>End of day</Text>
+                        </View>
+                      </CollapseHeader>
+                      <CollapseBody>
+                      {this.state.eodplan && this.state.eodplan.map(item => {
+                        return (
+                          <View style={[globalStyles.bottomMargin]} key={item.id}>
+                            <View style={globalStyles.timelineHeaderContainer}>
+                              <View style={globalStyles.timelineItemImg}>
+                                {item.userpic ? (
+                                  <Image
+                                    style={globalStyles.imageRound}
+                                    source={{
+                                      uri: item.userpic,
+                                    }}
+                                  />
+                                ) : (
+                                  <Image
+                                    style={globalStyles.imageRound}
+                                    source={require('../assets/images/unknown.jpg')}
+                                  />
+                                )}
+                              </View>
+                              <View style={globalStyles.timelineUserDetails}>
+                                <View style={globalStyles.timelineHeaderContainer}>
+                                  <View style={globalStyles.timelineTwoColumn}>
+                                    <Text style={[globalStyles.customFont, globalStyles.boldText]}>
+                                      {item.username}
+                                    </Text>
+                                  </View>
+                                  <View style={globalStyles.reportTypeContainer}>
+                                    <Text style={[globalStyles.customFont, globalStyles.boldText]}>
+                                      {item.type
+                                        ? this.typeFormatter(item.type)
+                                        : null}
+                                    </Text>
+                                  </View>
+                                </View>
+                                <View style={globalStyles.timelineHeaderContainer}>
+                                  <Text style={[globalStyles.customFont, globalStyles.boldText]}>
+                                    {_reportDate(item.createdAt)}
+                                  </Text>
+                                </View>
+                              </View>
+                            </View>
+                            <View style={globalStyles.timelineCard}>
+                              {item.text ? (
+                                <HTML html={item.text} style={[globalStyles.customFont, {color: '#4c4c4c', fontWeight: 'bold'}]}/>
+                              ) : null}
+                            </View>
+                          </View>
+                        )
+                      })}
+                      </CollapseBody>
+                    </Collapse>
                   </View>
                 </View>
               </View>
-            </ScrollView>
-          </SafeAreaView>
-        </>
-      );
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      </View>
+    );
   }
 }
 
@@ -327,7 +340,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   sectionContainer: {
-    marginTop: 32,
+    marginTop: 24,
     paddingHorizontal: 24,
   },
   sectionTitle: {
@@ -366,20 +379,57 @@ const styles = StyleSheet.create({
   },
   progressStatus: {
     marginTop: 20,
+    width: '85%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   objectiveProgress: {
     marginTop: 5,
+  },
+  objectiveProgressTitle: {
+    fontSize: 14,
+    fontWeight: '300',
+    marginBottom: 5,
   },
   objectiveProgressDescription: {
     marginTop: 10,
     padding: 20,
     borderWidth: 1,
     borderColor: '#cdcdcd',
+    borderRadius: 2,
   },
   progressBar: {
+    flex: 1,
+    width: '100%',
     marginTop: 10,
   },
   progressBarStatus: {
     marginBottom: 10,
+  },
+  separator: {
+    backgroundColor: '#fff',
+    borderBottomColor: '#00000020',
+    borderBottomWidth: 1,
+    padding: 0,
+    marginLeft: 0,
+  },
+  collapseContainer: {
+    marginBottom: 15,
+  },
+  collapseHeader: {
+    padding: 0,
+    margin: 0,
+  },
+  collapseTitle: {
+    fontSize: 22,
+    color: '#000',
+    fontWeight: 'bold',
+    paddingBottom: 4,
+    marginLeft: 0,
+  },
+  collapseBody: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
   },
 });

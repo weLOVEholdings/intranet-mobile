@@ -60,7 +60,9 @@ export default class Reports extends React.Component {
     let month = now.get('month') + 1;
     let day = now.get('date');
 
-    fetch(baseUrl + '/reportsteam/year/' + year + '/month/' + month + '/day/' + day)
+    fetch(
+      baseUrl + '/reportsteam/year/' + year + '/month/' + month + '/day/' + day,
+    )
       .then(response => response.json())
       .then(responseJson => {
         let dayreports = responseJson.data;
@@ -160,9 +162,8 @@ export default class Reports extends React.Component {
           paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
         }}>
         <StatusBar
-          barStyle="dark-content"
           hidden={false}
-          backgroundColor="transparent"
+          backgroundColor="#d53622"
           translucent={true}
         />
         <SafeAreaView>
@@ -174,7 +175,7 @@ export default class Reports extends React.Component {
               <View style={styles.sectionContainer}>
                 <View style={styles.username}>
                   <Text style={styles.usernameText}>
-                    Username: {this.state.user.name}
+                    User: {this.state.user.name}
                   </Text>
                 </View>
                 <View style={styles.main}>
@@ -456,7 +457,7 @@ export default class Reports extends React.Component {
                                 source={require('../assets/images/unknown.jpg')}
                               />
                             )}
-                            <Text>{report.username}</Text>
+                            <Text style={{color: '#6d6d6d', fontWeight: 'bold'}}>{report.username}</Text>
                             <Text>{report.type}</Text>
                             <TouchableOpacity
                               onPress={() => navigation.navigate('Timeline')}>
@@ -494,7 +495,7 @@ const styles = StyleSheet.create({
   username: {
     flex: 1,
     flexDirection: 'row-reverse',
-    marginBottom: 12,
+    marginBottom: 24,
   },
   usernameText: {
     fontSize: 16,
