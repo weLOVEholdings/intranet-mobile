@@ -166,7 +166,7 @@ class HomeScreen extends React.Component {
                     <Collapse isCollapsed={this.state.weeklyObjectives.length > 0 ? true : false} style={styles.collapseContainer}>
                       <CollapseHeader style={styles.collapseHeader}>
                         <View style={styles.separator}>
-                          <Text style={[globalStyles.customFont, styles.collapseTitle]}>Weekly Goals</Text>
+                          <Text style={[globalStyles.customFont, styles.collapseTitle]}>Weekly goals</Text>
                         </View>
                       </CollapseHeader>
                       <CollapseBody style={styles.collapseBody}>
@@ -201,7 +201,7 @@ class HomeScreen extends React.Component {
                     <Collapse isCollapsed={this.state.dayplan.length > 0 ? true : false} style={styles.collapseContainer}>
                       <CollapseHeader style={styles.collapseHeader}>
                         <View style={styles.separator}>
-                          <Text style={globalStyles.customFont, [styles.collapseTitle]}>Day Of Plan</Text>
+                          <Text style={globalStyles.customFont, [styles.collapseTitle]}>Day Plans</Text>
                         </View>
                       </CollapseHeader>
                       <CollapseBody style={{marginTop: 24}}>
@@ -260,7 +260,7 @@ class HomeScreen extends React.Component {
                     <Collapse isCollapsed={this.state.eodplan.length > 0 ? true : false}  style={[styles.collapseContainer, {marginBottom: 40}]}>
                       <CollapseHeader style={styles.collapseHeader}>
                         <View style={styles.separator}>
-                          <Text style={[globalStyles.customFont, styles.collapseTitle]}>End of day</Text>
+                          <Text style={[globalStyles.customFont, styles.collapseTitle]}>End of the day</Text>
                         </View>
                       </CollapseHeader>
                       <CollapseBody>

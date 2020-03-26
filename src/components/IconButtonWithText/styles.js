@@ -17,13 +17,15 @@ export default StyleSheet.create({
   },
 
   navigationButtonText: {
-    width: 75,
-    fontWeight: 'bold',
+    width: 70,
+    fontWeight: '600',
     color: '#6d6d6d',
     textAlign: 'center',
+    fontSize: 13,
   },
 
   navigationItem: {
-    marginRight: 10,
+    //marginRight: 10,
+    marginLeft: 0,
   },
 });
