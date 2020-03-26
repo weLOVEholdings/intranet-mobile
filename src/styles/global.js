@@ -2,8 +2,8 @@ import {StyleSheet} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 export const globalStyles = StyleSheet.create({
-  Header: {
-    marginBottom: 0
+  customFont: {
+    fontFamily: 'Helvetica Neue',
   },
   container: {
     flex: 1,
@@ -43,10 +43,10 @@ export const globalStyles = StyleSheet.create({
     resizeMode: 'contain',
   },
   imageRound: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     //resizeMode: 'contain',
-    borderRadius: 30,
+    borderRadius: 25,
   },
   formContainer: {
     width: '80%',
@@ -114,6 +114,8 @@ export const globalStyles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
+    padding: 0,
+    margin: 0,
   },
   timelineCard: {
     marginTop: 10,
@@ -126,13 +128,13 @@ export const globalStyles = StyleSheet.create({
     borderRadius: 8,
   },
   timelineItemImg: {
-    width: '25%',
+    width: 60,
   },
   timelineTwoColumn: {
     width: '50%',
   },
   timelineUserDetails: {
-    width: '75%',
+    flexGrow: 1,
     justifyContent: 'center',
   },
   timelineReportType: {
@@ -163,3 +165,4 @@ export const globalStyles = StyleSheet.create({
     marginBottom: 24,
   },
 });
+
