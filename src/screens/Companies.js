@@ -21,7 +21,7 @@ export default function Companies() {
     <View style={{
       paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     }}>
-      <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "transparent" translucent = {true}/>
+      <StatusBar hidden = {false} backgroundColor = "#d53622" translucent = {true}/>
       <SafeAreaView>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
