@@ -2,12 +2,14 @@ import React from 'react';
 import {
   Alert,
   View,
-  PlatForm,
+  Platform,
   StyleSheet,
   StatusBar,
   SafeAreaView,
   ScrollView,
   Text,
+  TextInput,
+  Image,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import ProgressBar from '@kcodev/react-native-progress-bar';
@@ -16,7 +18,9 @@ import Header from '../components/Header/Header';
 import {globalStyles} from '../styles/global';
 import {_retrieveData} from '../utils/storage';
 import {_startWeek, _endWeek} from '../utils/dateSetter';
-
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import Textarea from 'react-native-textarea';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 export default class Objectives extends React.Component {
   constructor(props) {
     super(props);
@@ -38,7 +42,8 @@ export default class Objectives extends React.Component {
   }
 
   createObjective() {
-    const apiUrl = 'https://welove-intranet-backend.herokuapp.com/objectives/weekly';
+    const apiUrl =
+      'https://welove-intranet-backend.herokuapp.com/objectives/weekly';
     let data = {
       title: this.state.title,
     };
@@ -69,7 +74,10 @@ export default class Objectives extends React.Component {
   }
 
   updateObjective(id, progress) {
-    const apiUrl = 'https://welove-intranet-backend.herokuapp.com/objectives/id/' + id + '/progress';
+    const apiUrl =
+      'https://welove-intranet-backend.herokuapp.com/objectives/id/' +
+      id +
+      '/progress';
     let data = {
       progress: this.state.progress,
     };
@@ -102,10 +110,15 @@ export default class Objectives extends React.Component {
   render() {
     console.log(this.state.weeklyObjectives);
     return (
-      <View style={{
-        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-      }}>
-        <StatusBar hidden = {false} backgroundColor = "#d53622" translucent = {true}/>
+      <View
+        style={{
+          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        }}>
+        <StatusBar
+          hidden={false}
+          backgroundColor="#d53622"
+          translucent={true}
+        />
         <SafeAreaView>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
@@ -118,21 +131,62 @@ export default class Objectives extends React.Component {
                   {_startWeek()} to {_endWeek()}
                 </Text>
                 <View style={styles.objectivesList}>
-                  {this.state.weeklyObjectives.length > 0 && this.state.weeklyObjectives.map(obj => {
-                    return (
-                      <View style={styles.progressStatus} key={obj.id}>
-                        <View style={styles.objectiveProgress}>
-                          <Text style={[globalStyles.customFont, styles.objectiveProgressTitle]}>
-                            OBJECTIVE
-                          </Text>
-                          <View style={styles.objectiveProgressDescription}>
-                            <HTML html={obj.title} style={[globalStyles.customFont, {color: '#4c4c4c', fontWeight: 'bold'}]}/>
+                  <View style={styles.createObjectiveWidget}>
+                    <View style={styles.borderWidget}>
+                      <Textarea
+                        containerStyle={styles.textareaContainer}
+                        style={styles.textarea}
+                        maxLength={120}
+                        placeholder={'Write Objective Here'}
+                        placeholderTextColor={'#c7c7c7'}
+                        underlineColorAndroid={'transparent'}
+                      />
+                    </View>
+                    <TouchableOpacity
+                      style={styles.createProgressButton}
+                      onPress={() => {
+                        console.log('This is the create object');
+                      }}>
+                      <FontAwesome5
+                        name="plus-circle"
+                        size={16}
+                        color="green"
+                        style={{marginRight: 3}}
+                      />
+                      <Text
+                        // eslint-disable-next-line react-native/no-inline-styles
+                        style={{
+                          fontSize: 16,
+                          fontWeight: 'bold',
+                          color: '#737373',
+                        }}>
+                        Create objective
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  {this.state.weeklyObjectives.length > 0 &&
+                    this.state.weeklyObjectives.map(obj => {
+                      return (
+                        <View style={styles.progressStatus} key={obj.id}>
+                          <View style={styles.objectiveProgress}>
+                            <View style={styles.objectiveProgressDescription}>
+                              <HTML
+                                html={obj.title}
+                                style={[
+                                  globalStyles.customFont,
+                                  {color: '#4c4c4c', fontWeight: 'bold'},
+                                ]}
+                              />
+                            </View>
                           </View>
-                        </View>
-                        <View style={styles.progressBar}>
-                          <Text style={globalStyles.customFont, [styles.progressBarStatus]}>
-                            Progress: {obj.progress}%
-                          </Text>
+                          <View style={styles.progressBar}>
+                            <Text
+                              style={
+                                (globalStyles.objectiveFont,
+                                [styles.progressBarStatus])
+                              }>
+                              Progress: {obj.progress}%
+                            </Text>
                             <ProgressBar
                               value={obj.progress}
                               maxValue={100}
@@ -140,9 +194,45 @@ export default class Objectives extends React.Component {
                               backgroundColor="#8ab4f8"
                               borderRadius={0}
                             />
+                          </View>
+                          <View
+                            // eslint-disable-next-line react-native/no-inline-styles
+                            style={{
+                              marginTop: 10,
+                              flexDirection: 'row',
+                              width: '100%',
+                            }}>
+                            <TextInput
+                              style={styles.percentInput}
+                              maxLength={2}
+                            />
+                            <Text style={{marginTop: 5, marginLeft: 3}}>%</Text>
+                            <TouchableOpacity
+                              style={styles.updateProgressButton}
+                              onPress={() => {
+                                console.log('This is the create object');
+                              }}>
+                              <FontAwesome5
+                                name="plus-circle"
+                                size={16}
+                                color="green"
+                                // eslint-disable-next-line react-native/no-inline-styles
+                                style={{marginRight: 3, marginTop: 5}}
+                              />
+                              <Text
+                                // eslint-disable-next-line react-native/no-inline-styles
+                                style={{
+                                  fontSize: 16,
+                                  fontWeight: 'bold',
+                                  color: '#737373',
+                                }}>
+                                Update Objective
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
                         </View>
-                      </View>);
-                  })}
+                      );
+                    })}
                 </View>
               </View>
             </View>
@@ -236,5 +326,55 @@ const styles = StyleSheet.create({
     color: '#757575',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  createObjectiveWidget: {
+    marginTop: 5,
+    width: '100%',
+  },
+  inputWidget: {
+    borderWidth: 1,
+    borderColor: '#cdcdcd',
+    padding: 0,
+  },
+  borderWidget: {
+    borderWidth: 1,
+    borderColor: '#ababab',
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  textarea: {
+    fontSize: 14,
+    textAlignVertical: 'top',
+    borderWidth: 1,
+    borderColor: '#cdcdcd',
+    height: 50,
+    padding: 0,
+    marginBottom: 10,
+  },
+  textareaContainer: {
+    height: 50,
+  },
+  createObjectiveWidget: {
+    width: '85%',
+  },
+  createProgressButton: {
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  percentInput: {
+    borderWidth: 1,
+    borderColor: '#cdcdcd',
+    paddingLeft: 20,
+    paddingRight: 20,
+    height: 30,
+  },
+  updateProgressButton: {
+    marginLeft: 15,
+    marginTop: 3,
+    flexDirection: 'row',
   },
 });

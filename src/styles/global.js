@@ -5,6 +5,10 @@ export const globalStyles = StyleSheet.create({
   customFont: {
     fontFamily: 'Helvetica Neue',
   },
+  objectiveFont: {
+    fontFamily: 'Helvetica Neue',
+    color: '#4c4c4c',
+  },
   container: {
     flex: 1,
     paddingTop: 40,

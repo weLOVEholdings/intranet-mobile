@@ -41,11 +41,6 @@ class HomeScreen extends React.Component {
       collapsedEod: false,
     };
   }
-
-  expandView(type){
-
-  }
-
   componentDidMount() {
     let baseUrl = 'https://welove-intranet-backend.herokuapp.com';
     let userUrl = baseUrl + '/contas/id/';
