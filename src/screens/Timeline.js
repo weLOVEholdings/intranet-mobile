@@ -14,7 +14,7 @@ import {
 import HTML from 'react-native-render-html';
 import ProgressBar from '@kcodev/react-native-progress-bar';
 import Header from '../components/Header/Header';
-import {_retrieveData} from '../utils/storage';
+import {_retrieveData, _storeData} from '../utils/storage';
 import {_reportDate} from '../utils/dateSetter';
 import {globalStyles} from '../styles/global';
 
@@ -36,6 +36,7 @@ export default class TimeLine extends React.Component {
     let reportUrl = baseUrl + '/reports/id/';
     let objectivesUrl = baseUrl + '/objectives/id/';
     let userId;
+
 
     _retrieveData('token').then(token =>
       this.setState({token: token, isLoading: true}),
@@ -114,6 +115,9 @@ export default class TimeLine extends React.Component {
               }
             });
         });
+
+        // store reports to storage
+        _storeData('timelineReports', JSON.stringify(this.state.reports));
       })
       .catch(error => {
         console.error(error);

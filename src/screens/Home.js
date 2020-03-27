@@ -16,6 +16,7 @@ import Moment from 'moment';
 import Header from '../components/Header/Header';
 import Login from './Login';
 import {_retrieveData} from '../utils/storage';
+import {_storeData} from '../utils/storage';
 import ProgressBar from '@kcodev/react-native-progress-bar';
 import {
   Collapse,
@@ -81,6 +82,7 @@ class HomeScreen extends React.Component {
                 weeklyObjectives: [...prevState.weeklyObjectives, obj],
               }));
             });
+            _storeData('weeklyObjectives', this.state.weeklyObjectives);
           });
       }
     });
