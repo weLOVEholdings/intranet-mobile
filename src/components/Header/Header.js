@@ -23,22 +23,22 @@ function Header() {
             navigationItemIcon="file"
             navigationItemTitle="Reports"
           />
-          <IconButtonWithText
+          {/*<IconButtonWithText
             navigationItemIcon="brain"
             navigationItemTitle="Intelligence"
-          />
+          />*/}
           <IconButtonWithText
             navigationItemIcon="bullseye"
             navigationItemTitle="Objectives"
           />
-          <IconButtonWithText
+          {/*<IconButtonWithText
             navigationItemIcon="building"
             navigationItemTitle="Companies"
           />
           <IconButtonWithText
             navigationItemIcon="shopping-cart"
             navigationItemTitle="Sales"
-          />
+          />*/}
         </ScrollView>
       </View>
     </View>
