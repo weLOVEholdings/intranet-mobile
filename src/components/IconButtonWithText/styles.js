@@ -17,8 +17,8 @@ export default StyleSheet.create({
   },
 
   navigationButtonText: {
-    width: 70,
-    fontWeight: '600',
+    width: 72,
+    fontWeight: 'bold',
     color: '#6d6d6d',
     textAlign: 'center',
     fontSize: 13,

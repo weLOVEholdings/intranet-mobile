@@ -30,7 +30,7 @@ export default function Login({navigation}) {
   const [loading, setLoading] = useState(false);
   const nav = useNavigation();
   _retrieveData('token').then(tkn => {
-    if (typeof tkn === 'string') {
+    if (tkn) {
       navigation.navigate('Home');
       return;
     }

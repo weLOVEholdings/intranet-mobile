@@ -149,7 +149,7 @@ export default class TimeLine extends React.Component {
             style={globalStyles.scrollView}>
             <View style={globalStyles.body}>
               <Header />
-              <View style={globalStyles.sectionContainer}>
+              <View style={styles.sectionContainer}>
                 {this.state.isLoading ? (
                   <View style={globalStyles.loadingContainer}>
                     <ActivityIndicator size="large" color="#e6e6e6" animating />
@@ -187,7 +187,7 @@ export default class TimeLine extends React.Component {
                                 </Text>
                               </View>
                               <View style={globalStyles.reportTypeContainer}>
-                                <Text style={[globalStyles.boldText, {fontSize: 16, marginBottom: 0, paddingBottom: 0}]}>
+                                <Text style={[globalStyles.boldText, {fontSize: 13, marginBottom: 0, paddingBottom: 0}]}>
                                   {item.report
                                     ? this.typeFormatter(item.report.type)
                                     : null}
@@ -261,5 +261,9 @@ const styles = StyleSheet.create({
   },
   progressBarStatus: {
     marginBottom: 10,
+  },
+  sectionContainer: {
+    marginTop: 48,
+    paddingHorizontal: 24,
   },
 });

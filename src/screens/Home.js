@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import HTML from 'react-native-render-html';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Moment from 'moment';
 import Header from '../components/Header/Header';
@@ -34,6 +35,9 @@ class HomeScreen extends React.Component {
       eodplan: [],
       weeklyObjectives: [],
       dayreports: [],
+      collapsedWeekly: false,
+      collapsedDay: false,
+      collapsedEod: false,
     };
   }
 
@@ -64,6 +68,9 @@ class HomeScreen extends React.Component {
           .then(response => response.json())
           .then(responseJson => {
             //console.log(JSON.stringify(responseJson.data));
+            if (responseJson.success && responseJson.data.length > 0) {
+              this.setState({collapsedWeekly: true});
+            }
             responseJson.data.map(object => {
               let obj = {
                 title: object.title,
@@ -75,7 +82,7 @@ class HomeScreen extends React.Component {
               }));
             });
           });
-        }
+      }
     });
 
     let now = Moment();
@@ -114,10 +121,12 @@ class HomeScreen extends React.Component {
                         this.setState(prevState => ({
                           dayplan: [...prevState.dayplan, reportItem],
                         }));
+                        this.setState({collapsedDay: true});
                       } else {
                         this.setState(prevState => ({
                           eodplan: [...prevState.eodplan, reportItem],
                         }));
+                        this.setState({collapsedEod: true});
                       }
                     }
                   });
@@ -164,10 +173,25 @@ class HomeScreen extends React.Component {
                     </Text>
                   </View>
                   <View style={styles.context}>
-                    <Collapse isCollapsed={this.state.weeklyObjectives.length > 0 ? true : false} style={styles.collapseContainer}>
+                    <Collapse
+                      isCollapsed={
+                        this.state.weeklyObjectives.length > 0 ? true : false
+                      }
+                      style={styles.collapseContainer}
+                      onToggle={isCollapsed =>
+                        this.setState({collapsedWeekly: isCollapsed})
+                      }>
+                      >
                       <CollapseHeader style={styles.collapseHeader}>
                         <View style={styles.separator}>
-                          <Text style={[globalStyles.customFont, styles.collapseTitle]}>Weekly goals</Text>
+                          <Text style={[globalStyles.customFont, styles.collapseTitle]}>
+                            {this.state.collapsedWeekly ?
+                              <FontAwesome5 name="angle-up" size={16} color="#6d6d6d"/>
+                            :
+                              <FontAwesome5 name="angle-down" size={16} color="#6d6d6d" />
+                            }
+                            {' '}Weekly goals
+                          </Text>
                         </View>
                       </CollapseHeader>
                       <CollapseBody style={styles.collapseBody}>
@@ -199,10 +223,23 @@ class HomeScreen extends React.Component {
                       </CollapseBody>
                     </Collapse>
 
-                    <Collapse isCollapsed={this.state.dayplan.length > 0 ? true : false} style={styles.collapseContainer}>
+                    <Collapse
+                      isCollapsed={this.state.dayplan.length > 0 ? true : false}
+                      style={styles.collapseContainer}
+                      onToggle={isCollapsed =>
+                        this.setState({collapsedDay: isCollapsed})
+                      }>
+                      >
                       <CollapseHeader style={styles.collapseHeader}>
                         <View style={styles.separator}>
-                          <Text style={globalStyles.customFont, [styles.collapseTitle]}>Day Plans</Text>
+                          <Text style={globalStyles.customFont, [styles.collapseTitle]}>
+                            {this.state.collapsedDay ?
+                              <FontAwesome5 name="angle-up" size={16} color="#6d6d6d"/>
+                            :
+                              <FontAwesome5 name="angle-down" size={16} color="#6d6d6d" />
+                            }
+                            {' '}Day Plans
+                          </Text>
                         </View>
                       </CollapseHeader>
                       <CollapseBody style={{marginTop: 24}}>
@@ -258,10 +295,23 @@ class HomeScreen extends React.Component {
                       </CollapseBody>
                     </Collapse>
 
-                    <Collapse isCollapsed={this.state.eodplan.length > 0 ? true : false}  style={[styles.collapseContainer, {marginBottom: 40}]}>
+                    <Collapse
+                      isCollapsed={this.state.eodplan.length > 0 ? true : false}
+                      style={[styles.collapseContainer, {marginBottom: 40}]}
+                      onToggle={isCollapsed =>
+                        this.setState({collapsedEod: isCollapsed})
+                      }>
+                      >
                       <CollapseHeader style={styles.collapseHeader}>
                         <View style={styles.separator}>
-                          <Text style={[globalStyles.customFont, styles.collapseTitle]}>End of the day</Text>
+                          <Text style={[globalStyles.customFont, styles.collapseTitle]}>
+                            {this.state.collapsedEod ?
+                              <FontAwesome5 name="angle-up" size={16} color="#6d6d6d"/>
+                            :
+                              <FontAwesome5 name="angle-down" size={16} color="#6d6d6d"/>
+                            }
+                            {' '}End of the day
+                          </Text>
                         </View>
                       </CollapseHeader>
                       <CollapseBody>
@@ -386,6 +436,7 @@ const styles = StyleSheet.create({
   },
   objectiveProgress: {
     marginTop: 5,
+    width: '100%',
   },
   objectiveProgressTitle: {
     fontSize: 14,
