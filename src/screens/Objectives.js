@@ -21,6 +21,7 @@ import {_startWeek, _endWeek} from '../utils/dateSetter';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Textarea from 'react-native-textarea';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
 export default class Objectives extends React.Component {
   constructor(props) {
     super(props);
@@ -68,12 +69,13 @@ export default class Objectives extends React.Component {
       })
       .then(responseData => {
         if (responseData.success) {
+          this.setState({title: ''});
           Alert.alert('Objective created');
         }
       });
   }
 
-  updateObjective(id, progress) {
+  updateObjective(id) {
     const apiUrl =
       'https://welove-intranet-backend.herokuapp.com/objectives/id/' +
       id +
@@ -102,10 +104,19 @@ export default class Objectives extends React.Component {
       })
       .then(responseData => {
         if (responseData.success) {
+          this.setState({progress: ''});
           Alert.alert('Progress updated');
         }
       });
   }
+
+  onChangeTextarea = text => {
+    this.setState({title: text});
+  };
+
+  onChangeProgress = progress => {
+    this.setState({progress: progress});
+  };
 
   render() {
     console.log(this.state.weeklyObjectives);
@@ -134,6 +145,8 @@ export default class Objectives extends React.Component {
                   <View style={styles.createObjectiveWidget}>
                     <View style={styles.borderWidget}>
                       <Textarea
+                        onChangeText={this.onChangeTextarea}
+                        defaultValue={this.state.title}
                         containerStyle={styles.textareaContainer}
                         style={styles.textarea}
                         maxLength={120}
@@ -142,27 +155,29 @@ export default class Objectives extends React.Component {
                         underlineColorAndroid={'transparent'}
                       />
                     </View>
-                    <TouchableOpacity
-                      style={styles.createProgressButton}
-                      onPress={() => {
-                        console.log('This is the create object');
-                      }}>
-                      <FontAwesome5
-                        name="plus-circle"
-                        size={16}
-                        color="green"
-                        style={{marginRight: 3}}
-                      />
-                      <Text
-                        // eslint-disable-next-line react-native/no-inline-styles
-                        style={{
-                          fontSize: 16,
-                          fontWeight: 'bold',
-                          color: '#737373',
+                    <View style={styles.alignLeft}>
+                      <TouchableOpacity
+                        style={styles.createProgressButton}
+                        onPress={() => {
+                          this.createObjective();
                         }}>
-                        Create objective
-                      </Text>
-                    </TouchableOpacity>
+                        <FontAwesome5
+                          name="plus-circle"
+                          size={16}
+                          color="green"
+                          style={{marginRight: 3}}
+                        />
+                        <Text
+                          // eslint-disable-next-line react-native/no-inline-styles
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            color: '#737373',
+                          }}>
+                          Create objective
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                   {this.state.weeklyObjectives.length > 0 &&
                     this.state.weeklyObjectives.map(obj => {
@@ -205,12 +220,16 @@ export default class Objectives extends React.Component {
                             <TextInput
                               style={styles.percentInput}
                               maxLength={2}
+                              onChangeText={value =>
+                                this.onChangeProgress(value)
+                              }
+                              keyboardType="numeric"
                             />
                             <Text style={{marginTop: 5, marginLeft: 3}}>%</Text>
                             <TouchableOpacity
                               style={styles.updateProgressButton}
                               onPress={() => {
-                                console.log('This is the create object');
+                                this.updateObjective(obj.id);
                               }}>
                               <FontAwesome5
                                 name="plus-circle"
@@ -282,13 +301,14 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   objectivesList: {
+    marginTop: 24,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   progressStatus: {
     marginTop: 20,
-    width: '85%',
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -317,7 +337,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   pageTitle: {
-    marginTop: 12,
+    //marginTop: 12,
     color: '#212529',
     fontSize: 28,
     fontWeight: 'bold',
@@ -349,16 +369,16 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     borderWidth: 1,
     borderColor: '#cdcdcd',
-    height: 50,
+    height: 70,
     padding: 0,
     marginBottom: 10,
   },
   textareaContainer: {
-    height: 50,
+    height: 70,
   },
-  createObjectiveWidget: {
-    width: '85%',
-  },
+  // createObjectiveWidget: {
+  //   width: '85%',
+  // },
   createProgressButton: {
     marginTop: 10,
     alignItems: 'center',
@@ -368,13 +388,18 @@ const styles = StyleSheet.create({
   percentInput: {
     borderWidth: 1,
     borderColor: '#cdcdcd',
-    paddingLeft: 20,
-    paddingRight: 20,
+    padding: 4,
+    lineHeight: 28,
     height: 30,
+    width: 50,
   },
   updateProgressButton: {
     marginLeft: 15,
     marginTop: 3,
     flexDirection: 'row',
+  },
+  alignLeft: {
+    flex: 1,
+    alignItems: 'flex-start',
   },
 });
