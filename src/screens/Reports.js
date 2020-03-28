@@ -168,6 +168,7 @@ export default class Reports extends React.Component {
         />
         <SafeAreaView>
           <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
             contentInsetAdjustmentBehavior="automatic"
             style={styles.scrollView}>
             <View style={styles.body}>
@@ -469,6 +470,7 @@ export default class Reports extends React.Component {
                   </View>
                 </View>
               </View>
+              <View style={{minHeight: '100%'}} />
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -480,6 +482,7 @@ export default class Reports extends React.Component {
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.lighter,
+    height: '100%',
   },
   engine: {
     position: 'absolute',

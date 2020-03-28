@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Dimensions,
   Image,
   View,
   StyleSheet,
@@ -30,7 +31,7 @@ class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user:{},
+      user: {},
       token: '',
       dayplan: [],
       eodplan: [],
@@ -157,6 +158,7 @@ class HomeScreen extends React.Component {
         />
         <SafeAreaView>
           <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
             contentInsetAdjustmentBehavior="automatic"
             style={styles.scrollView}>
             <View style={styles.body}>
@@ -311,7 +313,7 @@ class HomeScreen extends React.Component {
                           </Text>
                         </View>
                       </CollapseHeader>
-                      <CollapseBody>
+                      <CollapseBody style={{marginTop: 24}}>
                       {this.state.eodplan && this.state.eodplan.map(item => {
                         return (
                           <View style={[globalStyles.bottomMargin]} key={item.id}>
@@ -366,6 +368,7 @@ class HomeScreen extends React.Component {
                   </View>
                 </View>
               </View>
+              <View style={{minHeight: '100%'}} />
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -379,6 +382,7 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.lighter,
+    height: '100%',
   },
   engine: {
     position: 'absolute',
@@ -386,6 +390,7 @@ const styles = StyleSheet.create({
   },
   body: {
     backgroundColor: Colors.white,
+    height: '100%',
   },
   sectionContainer: {
     marginTop: 24,
