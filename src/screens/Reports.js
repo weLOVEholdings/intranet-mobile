@@ -209,6 +209,7 @@ export default class Reports extends React.Component {
                         <Text style={styles.greenButton}>Create Report</Text>
                       </TouchableOpacity>
                       <Modal
+                        transparent
                         visible={this.state.reportDialog}
                         onRequestClose={() => {
                           this.reportDialogShow(!this.state.reportDialog);
