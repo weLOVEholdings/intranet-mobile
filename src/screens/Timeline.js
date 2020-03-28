@@ -149,6 +149,7 @@ export default class TimeLine extends React.Component {
         />
         <SafeAreaView>
           <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
             contentInsetAdjustmentBehavior="automatic"
             style={globalStyles.scrollView}>
             <View style={globalStyles.body}>

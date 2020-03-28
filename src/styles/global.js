@@ -79,6 +79,7 @@ export const globalStyles = StyleSheet.create({
   },
   scrollView: {
     backgroundColor: Colors.lighter,
+    height: '100%',
   },
   engine: {
     position: 'absolute',
@@ -169,4 +170,3 @@ export const globalStyles = StyleSheet.create({
     marginBottom: 24,
   },
 });
-

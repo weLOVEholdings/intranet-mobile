@@ -24,6 +24,7 @@ export default function Companies() {
       <StatusBar hidden = {false} backgroundColor = "#d53622" translucent = {true}/>
       <SafeAreaView>
         <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           <View style={styles.body}>
@@ -64,6 +65,7 @@ export default function Companies() {
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.lighter,
+    height: '100%',
   },
   engine: {
     position: 'absolute',
