@@ -52,7 +52,6 @@ class HomeScreen extends React.Component {
     _retrieveData('user').then(user => this.setState({user: user}));
     _retrieveData('token').then(token => {
       this.setState({token: token});
-
       if (token) {
         fetch(objectivesUrl + weekNumber, {
           method: 'GET',

@@ -9,14 +9,14 @@ import {
   ScrollView,
   Text,
   TextInput,
-  Image,
 } from 'react-native';
+import Moment from 'moment';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import ProgressBar from '@kcodev/react-native-progress-bar';
 import HTML from 'react-native-render-html';
 import Header from '../components/Header/Header';
 import {globalStyles} from '../styles/global';
-import {_retrieveData} from '../utils/storage';
+import {_retrieveData, _storeData} from '../utils/storage';
 import {_startWeek, _endWeek} from '../utils/dateSetter';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Textarea from 'react-native-textarea';
@@ -34,12 +34,50 @@ export default class Objectives extends React.Component {
     };
   }
 
-  componentDidMount() {
-    _retrieveData('user').then(user => this.setState({user: user}));
-    _retrieveData('token').then(token => this.setState({token: token}));
+  fetchStoredWeeklyObjectives() {
     _retrieveData('weeklyObjectives').then(weeklyObjectives =>
       this.setState({weeklyObjectives: JSON.parse(weeklyObjectives)}),
     );
+  }
+
+  fetchNewWeeklyObjectives() {
+    let baseUrl = 'https://welove-intranet-backend.herokuapp.com';
+    let objectivesUrl = baseUrl + '/objectives/weekNumber/';
+    let weekNumber = Moment().isoWeek();
+
+    fetch(objectivesUrl + weekNumber, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'x-access-token': this.state.token,
+        Authorization: 'Bearer ' + this.state.token,
+      },
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(responseJson => {
+        if (responseJson.success && responseJson.data.length > 0) {
+          this.setState({collapsedWeekly: true});
+        }
+        responseJson.data.map(object => {
+          let obj = {
+            title: object.title,
+            progress: object.progress,
+            id: object._id,
+          };
+          this.setState(prevState => ({
+            weeklyObjectives: [...prevState.weeklyObjectives, obj],
+          }));
+        });
+        _storeData('weeklyObjectives', this.state.weeklyObjectives);
+      });
+  }
+
+  componentDidMount() {
+    _retrieveData('user').then(user => this.setState({user: user}));
+    _retrieveData('token').then(token => this.setState({token: token}));
+    this.fetchNewWeeklyObjectives();
   }
 
   createObjective() {
@@ -61,6 +99,7 @@ export default class Objectives extends React.Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'x-access-token': this.state.token,
       },
       body: formBody,
     })
@@ -71,6 +110,7 @@ export default class Objectives extends React.Component {
         if (responseData.success) {
           this.setState({title: ''});
           Alert.alert('Objective created');
+          this.fetchNewWeeklyObjectives();
         }
       });
   }
@@ -93,9 +133,10 @@ export default class Objectives extends React.Component {
     formBody = formBody.join('&');
 
     fetch(apiUrl, {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'x-access-token': this.state.token,
       },
       body: formBody,
     })
@@ -106,6 +147,7 @@ export default class Objectives extends React.Component {
         if (responseData.success) {
           this.setState({progress: ''});
           Alert.alert('Progress updated');
+          this.fetchNewWeeklyObjectives();
         }
       });
   }
