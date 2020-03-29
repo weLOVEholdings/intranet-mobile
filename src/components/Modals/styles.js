@@ -4,7 +4,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF',
+    //backgroundColor: '#F5FCFF',
   },
   nav: {
     flexDirection: 'row',
@@ -123,8 +123,9 @@ export const styles = StyleSheet.create({
 
   dialogContainer: {
     width: '90%',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fff',
     padding: 10,
+    borderRadius: 5,
   },
 
   dialogTitle: {
@@ -183,7 +184,11 @@ export const styles = StyleSheet.create({
   },
   rich: {
     maxHeight: 120,
+    minHeight: 120,
     flex: 1,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
   },
   richBar: {
     height: 50,
@@ -200,15 +205,19 @@ export const styles = StyleSheet.create({
     marginTop: 24,
   },
   dates: {
-    padding: 5,
+    padding: 3,
     borderRadius: 5,
-    backgroundColor: '#fff',
+    backgroundColor: '#fafafa',
     marginBottom: 20,
     marginRight: 5,
     width: '30%',
   },
+  dateText: {
+    fontSize: 12,
+    fontFamily: 'Arial',
+  },
   buttonPress: {
-    padding: 5,
+    padding: 3,
     borderWidth: 3,
     borderColor: 'black',
     borderRadius: 5,

@@ -10,9 +10,9 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  Modal,
   Picker,
 } from 'react-native';
+import Modal from 'react-native-modal';
 import Moment from 'moment';
 //import {useNavigation} from '@react-navigation/native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -132,7 +132,6 @@ export default class Reports extends React.Component {
       type: this.state.ctrType,
     };
 
-    //console.log('report data: ' + JSON.stringify(report));
     this.reportTeamDialogShow(false);
     fetch(apiUrl + '/reportsteam/', {
       method: 'POST',
@@ -171,6 +170,30 @@ export default class Reports extends React.Component {
             contentContainerStyle={{flexGrow: 1}}
             contentInsetAdjustmentBehavior="automatic"
             style={styles.scrollView}>
+            <Weekly
+              openModal={this.state.openModalWeekly}
+              closeModal={this.setModalWeekly}
+              reportDialogShow={this.reportDialogShow}
+            />
+
+            <Eod
+              openModal={this.state.openModalEod}
+              closeModal={this.setModalEod}
+              reportDialogShow={this.reportDialogShow}
+            />
+
+            <Status
+              openModal={this.state.openModalStatus}
+              closeModal={this.setModalStatus}
+              reportDialogShow={this.reportDialogShow}
+            />
+
+            <Dayplan
+              openModal={this.state.openModalDayplan}
+              closeModal={this.setModalDayplan}
+              reportDialogShow={this.reportDialogShow}
+            />
+
             <View style={styles.body}>
               <Header />
               <View style={styles.sectionContainer}>
@@ -208,9 +231,9 @@ export default class Reports extends React.Component {
                         }}>
                         <Text style={styles.greenButton}>Create Report</Text>
                       </TouchableOpacity>
+
                       <Modal
-                        transparent
-                        visible={this.state.reportDialog}
+                        isVisible={this.state.reportDialog}
                         onRequestClose={() => {
                           this.reportDialogShow(!this.state.reportDialog);
                         }}>
@@ -219,17 +242,22 @@ export default class Reports extends React.Component {
                             flex: 1,
                             alignItems: 'center',
                             justifyContent: 'center',
-                            transparent: 'true',
                             width: '100%',
+                            padding: 8,
                           }}>
                           <View style={styles.dialogContainer}>
-                            <View style={styles.dialogClose}>
-                              <TouchableOpacity
-                                onPress={() => {
-                                  this.reportDialogShow(false);
-                                }}>
-                                <AntDesign name="close" size={18} />
-                              </TouchableOpacity>
+                            <View style={globalStyles.dialogHeader}>
+                              <View style={styles.nav}>
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    this.reportDialogShow(false);
+                                  }}>
+                                  <Text style={globalStyles.boldText}>
+                                    <AntDesign name="arrowleft" size={18} />
+                                    Voltar
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
                             </View>
                             <View style={styles.reportDialogContent}>
                               <View style={{marginTop: 10, marginBottom: 10}}>
@@ -238,7 +266,10 @@ export default class Reports extends React.Component {
                                 </Text>
                               </View>
                               <TouchableOpacity
-                                onPress={() => this.setModalWeekly(true)}
+                                onPress={() => {
+                                  this.reportDialogShow(false);
+                                  this.setModalWeekly(true);
+                                }}
                                 style={styles.reportTypeCon}>
                                 <View style={styles.cardView}>
                                   <Text style={{fontSize: 18}}>Report</Text>
@@ -247,13 +278,11 @@ export default class Reports extends React.Component {
                                   </Text>
                                 </View>
                               </TouchableOpacity>
-                              <Weekly
-                                openModal={this.state.openModalWeekly}
-                                closeModal={this.setModalWeekly}
-                                reportDialogShow={this.reportDialogShow}
-                              />
                               <TouchableOpacity
-                                onPress={() => this.setModalEod(true)}
+                                onPress={() => {
+                                  this.setModalEod(true);
+                                  this.reportDialogShow(false);
+                                }}
                                 style={styles.reportTypeCon}>
                                 <View style={styles.cardView}>
                                   <Text style={{fontSize: 18}}>EOD</Text>
@@ -262,13 +291,12 @@ export default class Reports extends React.Component {
                                   </Text>
                                 </View>
                               </TouchableOpacity>
-                              <Eod
-                                openModal={this.state.openModalEod}
-                                closeModal={this.setModalEod}
-                                reportDialogShow={this.reportDialogShow}
-                              />
+
                               <TouchableOpacity
-                                onPress={() => this.setModalStatus(true)}
+                                onPress={() => {
+                                  this.setModalStatus(true);
+                                  this.reportDialogShow(false);
+                                }}
                                 style={styles.reportTypeCon}>
                                 <View style={styles.cardView}>
                                   <Text style={{fontSize: 18}}>Status</Text>
@@ -277,13 +305,12 @@ export default class Reports extends React.Component {
                                   </Text>
                                 </View>
                               </TouchableOpacity>
-                              <Status
-                                openModal={this.state.openModalStatus}
-                                closeModal={this.setModalStatus}
-                                reportDialogShow={this.reportDialogShow}
-                              />
+
                               <TouchableOpacity
-                                onPress={() => this.setModalDayplan(true)}
+                                onPress={() => {
+                                  this.setModalDayplan(true);
+                                  this.reportDialogShow(false);
+                                }}
                                 style={styles.reportTypeCon}>
                                 <View style={styles.cardView}>
                                   <Text style={{fontSize: 18}}>Day Plan</Text>
@@ -292,11 +319,6 @@ export default class Reports extends React.Component {
                                   </Text>
                                 </View>
                               </TouchableOpacity>
-                              <Dayplan
-                                openModal={this.state.openModalDayplan}
-                                closeModal={this.setModalDayplan}
-                                reportDialogShow={this.reportDialogShow}
-                              />
                             </View>
                           </View>
                         </View>
@@ -311,7 +333,7 @@ export default class Reports extends React.Component {
                         </Text>
                       </TouchableOpacity>
                       <Modal
-                        visible={this.state.reportTeamDialog}
+                        isVisible={this.state.reportTeamDialog}
                         onRequestClose={() => {
                           this.reportTeamDialogShow(
                             !this.state.reportTeamDialog,
@@ -322,16 +344,20 @@ export default class Reports extends React.Component {
                             flex: 1,
                             alignItems: 'center',
                             justifyContent: 'center',
-                            transparent: 'true',
                           }}>
                           <View style={styles.dialogContainer}>
-                            <View style={styles.dialogClose}>
-                              <TouchableOpacity
-                                onPress={() => {
-                                  this.reportTeamDialogShow(false);
-                                }}>
-                                <AntDesign name="close" size={18} />
-                              </TouchableOpacity>
+                            <View style={globalStyles.dialogHeader}>
+                              <View style={styles.nav}>
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    this.reportTeamDialogShow(false);
+                                  }}>
+                                  <Text style={globalStyles.boldText}>
+                                    <AntDesign name="arrowleft" size={18} />
+                                    Voltar
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
                             </View>
                             <View style={styles.dialogContent}>
                               <Text style={globalStyles.dialogTitle}>
@@ -459,7 +485,10 @@ export default class Reports extends React.Component {
                                 source={require('../assets/images/unknown.jpg')}
                               />
                             )}
-                            <Text style={{color: '#6d6d6d', fontWeight: 'bold'}}>{report.username}</Text>
+                            <Text
+                              style={{color: '#6d6d6d', fontWeight: 'bold'}}>
+                              {report.username}
+                            </Text>
                             <Text>{report.type}</Text>
                             <TouchableOpacity
                               onPress={() => navigation.navigate('Timeline')}>
@@ -587,9 +616,10 @@ const styles = StyleSheet.create({
   },
 
   dialogContainer: {
-    width: '90%',
-    backgroundColor: '#f0f0f0',
-    //padding: 10,
+    width: '100%',
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 5,
   },
 
   dialogTitle: {
@@ -598,9 +628,9 @@ const styles = StyleSheet.create({
 
   dialogContent: {
     marginTop: 10,
-    marginLeft: 30,
-    marginRight: 50,
-    backgroundColor: '#f0f0f0',
+    marginLeft: 20,
+    marginRight: 20,
+    backgroundColor: '#fff',
   },
 
   dataEntryView: {
@@ -624,7 +654,7 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     flexDirection: 'row-reverse',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fff',
   },
   reportDialogContent: {
     alignItems: 'center',
@@ -666,5 +696,10 @@ const styles = StyleSheet.create({
     color: '#007bff',
     fontWeight: 'bold',
     fontSize: 14,
+  },
+  nav: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 5,
   },
 });

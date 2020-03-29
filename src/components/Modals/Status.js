@@ -1,15 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {
-  Alert,
   View,
   ScrollView,
   Text,
   TouchableOpacity,
-  Modal,
   KeyboardAvoidingView,
   SafeAreaView,
 } from 'react-native';
+import Modal from 'react-native-modal';
 import {RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
 import {actions as RichEditorActions} from 'react-native-pell-rich-editor';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -54,8 +53,6 @@ export default function Status({openModal, closeModal, reportDialogShow}) {
       status: status,
       type: type,
     };
-    //console.log('report: ' + JSON.stringify(report));
-    //Alert.alert(JSON.stringify(report));
     CreateReport(report);
     closeModal(!openModal);
     reportDialogShow(false);
@@ -64,7 +61,7 @@ export default function Status({openModal, closeModal, reportDialogShow}) {
   const that = this;
   return (
     <Modal
-      visible={openModal}
+      isVisible={openModal}
       onRequestClose={() => {
         closeModal(!openModal);
       }}>
@@ -83,22 +80,19 @@ export default function Status({openModal, closeModal, reportDialogShow}) {
                   <TouchableOpacity
                     onPress={() => {
                       closeModal(false);
+                      reportDialogShow(true);
                     }}>
                     <Text style={globalStyles.boldText}>
                       <AntDesign name="arrowleft" size={18} />
                       Voltar
                     </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      reportDialogShow(false);
-                    }}>
-                    <AntDesign name="close" size={18} />
-                  </TouchableOpacity>
                 </View>
               </View>
               <View style={globalStyles.dialogtitleContainer}>
-                <Text style={[globalStyles.dialogTitle, {marginBottom: 24}]}>Status</Text>
+                <Text style={[globalStyles.dialogTitle, {marginBottom: 24}]}>
+                  Status
+                </Text>
                 <View style={styles.dateContainer}>
                   {dates &&
                     dates.map(date => {
@@ -114,7 +108,7 @@ export default function Status({openModal, closeModal, reportDialogShow}) {
                             setSelectedDateId(date._id);
                             setSelected(true);
                           }}>
-                          <Text>
+                          <Text style={styles.dateText}>
                             {date.day}/{date.month}/{date.year}
                           </Text>
                         </TouchableOpacity>
