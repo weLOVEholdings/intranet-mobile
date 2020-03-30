@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {
-  Alert,
   View,
   ScrollView,
   Text,
@@ -37,12 +36,6 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
 
   var apiUrl =
     'https://welove-intranet-backend.herokuapp.com/reportsteam/type/dayplan';
-
-  // text: "",
-  // type: "",
-  // userId: "",
-  // status: "",
-  // reportsTeamId: ""
 
   useEffect(() => {
     fetch(apiUrl)
@@ -142,7 +135,10 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
 
                 <View>
                   <ScrollView
-                    onTouchStart={ev => setEnabled(false)}
+                    onTouchStart={ev => {
+                      setEnabled(false);
+                      console.log('enabled: ' + enabled);
+                    }}
                     onTouchEnd={ev => setEnabled(true)}
                     onMomentumScrollEnd={ev => setEnabled(true)}
                     onScrollEndDrag={ev => setEnabled(true)}
