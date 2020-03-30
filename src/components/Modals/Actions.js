@@ -10,6 +10,7 @@ export const CreateReport = report => {
     text: report.text,
     userId: report.userId,
     reportsTeamId: report.teamId,
+    token: report.token,
   };
 
   console.log('reportDetails: ' + JSON.stringify(reportDetails));
@@ -19,7 +20,7 @@ export const CreateReport = report => {
       'Content-Type': 'application/json',
       'x-access-token': report.token,
     },
-    body: reportDetails,
+    body: JSON.stringify(reportDetails),
   })
     .then(response => {
       return response.json();
