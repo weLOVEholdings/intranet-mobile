@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {
-  Alert,
   View,
   ScrollView,
   Text,
@@ -131,7 +130,7 @@ export default function Eod({openModal, closeModal, reportDialogShow}) {
                   <KeyboardAvoidingView
                     behavior={'position'}
                     enabled
-                    keyboardVerticalOffset={140}>
+                    keyboardVerticalOffset={60}>
                     <RichToolbar
                       style={styles.richBar}
                       getEditor={() => that.richText}
