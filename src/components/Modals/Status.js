@@ -126,7 +126,7 @@ export default function Status({openModal, closeModal, reportDialogShow}) {
                   <KeyboardAvoidingView
                     behavior={'position'}
                     enabled
-                    keyboardVerticalOffset={140}>
+                    keyboardVerticalOffset={60}>
                     <RichToolbar
                       style={styles.richBar}
                       getEditor={() => that.richText}

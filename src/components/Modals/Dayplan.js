@@ -85,10 +85,10 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
         closeModal(!openModal);
       }}>
       <SafeAreaView style={styles.container}>
-        <ScrollView scrollEnabled={enabled}>
+        <ScrollView>
           <View
             style={{
-              flex: 1,
+              //flex: 1,
               alignItems: 'center',
               justifyContent: 'center',
               transparent: 'true',
@@ -152,7 +152,7 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
                   <KeyboardAvoidingView
                     behavior={'position'}
                     enabled
-                    keyboardVerticalOffset={140}>
+                    keyboardVerticalOffset={60}>
                     <RichToolbar
                       style={styles.richBar}
                       getEditor={() => that.richText}

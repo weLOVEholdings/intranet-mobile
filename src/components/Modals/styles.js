@@ -183,9 +183,8 @@ export const styles = StyleSheet.create({
     marginTop: 10,
   },
   rich: {
-    maxHeight: 120,
-    minHeight: 120,
-    flex: 1,
+    maxHeight: 920,
+    minHeight: 415,
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
