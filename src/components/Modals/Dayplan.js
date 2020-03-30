@@ -25,6 +25,15 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
   const [selectedDateId, setSelectedDateId] = useState();
   const [selected, setSelected] = useState(false);
   const [dates, setDates] = useState([]);
+  const [enabled, setEnabled] = useState(true);
+
+  useEffect(() => {
+    if (enabled === false) {
+      console.log('False');
+    } else {
+      console.log('True');
+    }
+  }, [enabled]);
 
   var apiUrl =
     'https://welove-intranet-backend.herokuapp.com/reportsteam/type/dayplan';
@@ -83,7 +92,7 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
         closeModal(!openModal);
       }}>
       <SafeAreaView style={styles.container}>
-        <ScrollView>
+        <ScrollView scrollEnabled={enabled}>
           <View
             style={{
               flex: 1,
@@ -132,7 +141,12 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
                 </View>
 
                 <View>
-                  <ScrollView style={styles.scroll}>
+                  <ScrollView
+                    onTouchStart={ev => setEnabled(false)}
+                    onTouchEnd={ev => setEnabled(true)}
+                    onMomentumScrollEnd={ev => setEnabled(true)}
+                    onScrollEndDrag={ev => setEnabled(true)}
+                    style={styles.scroll}>
                     <RichEditor
                       ref={rf => (that.richText = rf)}
                       initialContentHTML={initHTML}
