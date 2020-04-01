@@ -31,12 +31,13 @@ export default function Eod({openModal, closeModal, reportDialogShow}) {
     fetch(apiUrl)
       .then(res => res.json())
       .then(res => {
-        setDates(res.data);
+        setDates(res.data.slice(-3));
       })
       .catch(err => console.log(err));
   }, [apiUrl]);
 
   const save = async () => {
+    let token = await _retrieveData('token');
     let text = await this.richText.getContentHtml();
     let user = await _retrieveData('user');
     let userId = user._id;
@@ -45,6 +46,7 @@ export default function Eod({openModal, closeModal, reportDialogShow}) {
     let reportsTeamId = selectedDateId;
 
     let report = {
+      token: token,
       text: text,
       userId: userId,
       teamId: reportsTeamId,
@@ -66,98 +68,96 @@ export default function Eod({openModal, closeModal, reportDialogShow}) {
         closeModal(!openModal);
       }}>
       <SafeAreaView style={styles.container}>
-        <ScrollView>
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <View style={styles.dialogContainer}>
-              <View style={globalStyles.dialogHeader}>
-                <View style={styles.nav}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      closeModal(false);
-                      reportDialogShow(true);
-                    }}>
-                    <Text style={globalStyles.boldText}>
-                      <AntDesign name="arrowleft" size={18} />
-                      Voltar
-                    </Text>
-                  </TouchableOpacity>
-                  {/*<TouchableOpacity
-                    onPress={() => {
-                      reportDialogShow(false);
-                    }}>
-                    <AntDesign name="close" size={18} />
-                  </TouchableOpacity>*/}
-                </View>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <View style={styles.dialogContainer}>
+            <View style={globalStyles.dialogHeader}>
+              <View style={styles.nav}>
+                <TouchableOpacity
+                  onPress={() => {
+                    closeModal(false);
+                    reportDialogShow(true);
+                  }}>
+                  <Text style={globalStyles.boldText}>
+                    <AntDesign name="arrowleft" size={18} />
+                    Voltar
+                  </Text>
+                </TouchableOpacity>
+                {/*<TouchableOpacity
+                  onPress={() => {
+                    reportDialogShow(false);
+                  }}>
+                  <AntDesign name="close" size={18} />
+                </TouchableOpacity>*/}
               </View>
-              <View style={globalStyles.dialogtitleContainer}>
-                <Text style={globalStyles.dialogTitle}>EOD</Text>
-                <View style={styles.dateContainer}>
-                  {dates &&
-                    dates.map(date => {
-                      return (
-                        <TouchableOpacity
-                          style={
-                            selected && date._id === selectedDateId
-                              ? styles.buttonPress
-                              : styles.dates
-                          }
-                          key={date._id}
-                          onPress={() => {
-                            setSelectedDateId(date._id);
-                            setSelected(true);
-                          }}>
-                          <Text style={styles.dateText}>
-                            {date.day}/{date.month}/{date.year}
-                          </Text>
-                        </TouchableOpacity>
-                      );
-                    })}
-                </View>
+            </View>
+            <View style={globalStyles.dialogtitleContainer}>
+              <Text style={globalStyles.dialogTitle}>EOD</Text>
+              <View style={styles.dateContainer}>
+                {dates &&
+                  dates.map(date => {
+                    return (
+                      <TouchableOpacity
+                        style={
+                          selected && date._id === selectedDateId
+                            ? styles.buttonPress
+                            : styles.dates
+                        }
+                        key={date._id}
+                        onPress={() => {
+                          setSelectedDateId(date._id);
+                          setSelected(true);
+                        }}>
+                        <Text style={styles.dateText}>
+                          {date.day}/{date.month}/{date.year}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+              </View>
 
-                <View>
-                  <ScrollView style={styles.scroll}>
-                    <RichEditor
-                      ref={rf => (that.richText = rf)}
-                      initialContentHTML={initHTML}
-                      style={styles.rich}
-                    />
-                  </ScrollView>
-                  <KeyboardAvoidingView
-                    behavior={'position'}
-                    enabled
-                    keyboardVerticalOffset={60}>
-                    <RichToolbar
-                      style={styles.richBar}
-                      getEditor={() => that.richText}
-                      iconTint={'#000033'}
-                      selectedIconTint={'#2095F2'}
-                      selectedButtonStyle={{backgroundColor: 'transparent'}}
-                      actions={[
-                        RichEditorActions.setBold,
-                        RichEditorActions.setItalic,
-                        RichEditorActions.insertBulletsList,
-                        RichEditorActions.insertOrderedList,
-                        RichEditorActions.insertLink,
-                      ]}
-                    />
-                  </KeyboardAvoidingView>
-                  <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                      style={styles.greenButtonWidget}
-                      onPress={() => save()}>
-                      <Text style={styles.greenButton}>Create Report</Text>
-                    </TouchableOpacity>
-                  </View>
+              <View>
+                <ScrollView style={styles.scroll}>
+                  <RichEditor
+                    ref={rf => (that.richText = rf)}
+                    initialContentHTML={initHTML}
+                    style={styles.rich}
+                  />
+                </ScrollView>
+                <KeyboardAvoidingView
+                  behavior={'position'}
+                  enabled
+                  keyboardVerticalOffset={60}>
+                  <RichToolbar
+                    style={styles.richBar}
+                    getEditor={() => that.richText}
+                    iconTint={'#000033'}
+                    selectedIconTint={'#2095F2'}
+                    selectedButtonStyle={{backgroundColor: 'transparent'}}
+                    actions={[
+                      RichEditorActions.setBold,
+                      RichEditorActions.setItalic,
+                      RichEditorActions.insertBulletsList,
+                      RichEditorActions.insertOrderedList,
+                      RichEditorActions.insertLink,
+                    ]}
+                  />
+                </KeyboardAvoidingView>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={styles.greenButtonWidget}
+                    onPress={() => save()}>
+                    <Text style={styles.greenButton}>Create Report</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
           </View>
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </Modal>
   );
