@@ -184,7 +184,10 @@ export const styles = StyleSheet.create({
   },
   rich: {
     maxHeight: 920,
-    minHeight: 415,
+    minHeight: 240,
+    //height: 1240,
+    //flex: 1,
+    //flexGrow: 1,
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
@@ -192,12 +195,15 @@ export const styles = StyleSheet.create({
   richBar: {
     height: 50,
     backgroundColor: '#F5FCFF',
+    //borderWidth: 1,
+    //borderColor: '#00000020',
   },
   scroll: {
+    height: 240,
     backgroundColor: '#ffffff',
   },
   dateContainer: {
-    flex: 1,
+    //flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'flex-start',
@@ -226,7 +232,7 @@ export const styles = StyleSheet.create({
     width: '30%',
   },
   buttonContainer: {
-    flex: 1,
+    //flex: 1,
     alignItems: 'flex-end',
     marginTop: 12,
   },

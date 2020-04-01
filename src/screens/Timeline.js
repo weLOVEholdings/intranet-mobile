@@ -37,7 +37,6 @@ export default class TimeLine extends React.Component {
     let objectivesUrl = baseUrl + '/objectives/id/';
     let userId;
 
-
     _retrieveData('token').then(token =>
       this.setState({token: token, isLoading: true}),
     );
@@ -57,13 +56,26 @@ export default class TimeLine extends React.Component {
               if (responseJsonUser.success === true) {
                 let user = responseJsonUser.data;
                 userId = user._id;
-                if (this.state.users.length > 0 && this.state.users.filter(function(e) { return e._id === userId; }).length === 0) {
+                if (
+                  this.state.users.length > 0 &&
+                  this.state.users.filter(function(e) {
+                    return e._id === userId;
+                  }).length === 0
+                ) {
                   this.setState(prevState => ({
-                    users: [...prevState.users, {user_id: userId, details: user}],
+                    users: [
+                      ...prevState.users,
+                      {user_id: userId, details: user},
+                    ],
                   }));
                 }
 
-                if (report.type === 'dayplan' || report.type === 'eod') {
+                if (
+                  report.type === 'dayplan' ||
+                  report.type === 'eod' ||
+                  report.type === 'report' ||
+                  report.type === 'status'
+                ) {
                   fetch(reportUrl + report.modelId, {
                     headers: {
                       'x-access-token': this.state.token,
@@ -131,6 +143,8 @@ export default class TimeLine extends React.Component {
       return 'END OF THE DAY';
     } else if (type === 'report') {
       return 'REPORT';
+    } else if (type === 'status') {
+      return 'STATUS';
     } else {
       return 'OBJECTIVE';
     }
@@ -223,14 +237,19 @@ export default class TimeLine extends React.Component {
                             <HTML
                               html={
                                 item.report.type === 'dayplan' ||
-                                item.report.type === 'eod'
+                                item.report.type === 'eod' ||
+                                item.report.type === 'report' ||
+                                item.report.type === 'status'
                                   ? item.report.text
                                   : item.report.title
                               }
                             />
                           ) : null}
-                          {item.report && item.report.type !== 'dayplan' &&
-                          item.report.type !== 'eod' ? (
+                          {item.report &&
+                          item.report.type !== 'dayplan' &&
+                          item.report.type !== 'eod' &&
+                          item.report.type !== 'report' &&
+                          item.report.type !== 'status' ? (
                             <View style={styles.progressBar}>
                               <Text style={styles.progressBarStatus}>
                                 Progress: {item.report.progress}%
