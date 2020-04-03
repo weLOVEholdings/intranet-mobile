@@ -113,7 +113,7 @@ export default class Objectives extends React.Component {
         if (responseData.success) {
           this.setState({title: ''});
           Alert.alert('Objective created');
-          this.fetchNewWeeklyObjectives();
+          this.fetchNewWeeklyObjectives(this.state.token);
         }
       });
   }
@@ -150,7 +150,7 @@ export default class Objectives extends React.Component {
         if (responseData.success) {
           this.setState({progress: ''});
           Alert.alert('Progress updated');
-          this.fetchNewWeeklyObjectives();
+          this.fetchNewWeeklyObjectives(this.state.token);
         }
       });
   }
