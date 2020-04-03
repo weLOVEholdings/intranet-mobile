@@ -19,20 +19,16 @@ import {styles} from './styles';
 
 const initHTML = '';
 
-export default function DayPlan({openModal, closeModal, reportDialogShow}) {
+export default function DayPlan({
+  openModal,
+  closeModal,
+  reportDialogShow,
+  getReports,
+}) {
   //const [reportDates, setreportDates] = useState('');
   const [selectedDateId, setSelectedDateId] = useState();
   const [selected, setSelected] = useState(false);
   const [dates, setDates] = useState([]);
-  const [enabled, setEnabled] = useState(true);
-
-  useEffect(() => {
-    if (enabled === false) {
-      console.log('False');
-    } else {
-      console.log('True');
-    }
-  }, [enabled]);
 
   var apiUrl =
     'https://welove-intranet-backend.herokuapp.com/reportsteam/type/dayplan';
@@ -65,7 +61,7 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
     };
     //console.log('report: ' + JSON.stringify(report));
     //Alert.alert(JSON.stringify(report));
-    CreateReport(report);
+    CreateReport(report, getReports);
     closeModal(!openModal);
     reportDialogShow(false);
   };
@@ -76,12 +72,6 @@ export default function DayPlan({openModal, closeModal, reportDialogShow}) {
   //   );
   //   this.richText.blurContentEditor();
   // };
-
-  const onLayout = event => {
-    if (this.state.dimensions) return // layout was already called
-    let {width, height} = event.nativeEvent.layout
-    this.setState({dimensions: {width, height}})
-  }
 
   const that = this;
   return (

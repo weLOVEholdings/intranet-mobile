@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const CreateReport = report => {
+export const CreateReport = (report, getReports) => {
   console.log('Creating report');
   const apiUrl = 'https://welove-intranet-backend.herokuapp.com/reports/create';
   let reportDetails = {
@@ -27,6 +27,6 @@ export const CreateReport = report => {
     })
     .then(responseData => {
       console.log('==========> Successfully created report');
-      //report.closeFormModal(false);
+      getReports();
     });
 };

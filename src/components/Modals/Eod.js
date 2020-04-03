@@ -19,7 +19,12 @@ import {styles} from './styles';
 
 const initHTML = '';
 
-export default function Eod({openModal, closeModal, reportDialogShow}) {
+export default function Eod({
+  openModal,
+  closeModal,
+  reportDialogShow,
+  getReports,
+}) {
   const [selectedDateId, setSelectedDateId] = useState();
   const [selected, setSelected] = useState(false);
   const [dates, setDates] = useState([]);
@@ -55,7 +60,7 @@ export default function Eod({openModal, closeModal, reportDialogShow}) {
     };
     //console.log('report: ' + JSON.stringify(report));
     //Alert.alert(JSON.stringify(report));
-    CreateReport(report);
+    CreateReport(report, getReports);
     closeModal(!openModal);
     reportDialogShow(false);
   };
