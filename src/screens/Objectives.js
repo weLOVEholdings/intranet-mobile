@@ -40,7 +40,7 @@ export default class Objectives extends React.Component {
     );
   }
 
-  fetchNewWeeklyObjectives() {
+  fetchNewWeeklyObjectives(token) {
     let baseUrl = 'https://welove-intranet-backend.herokuapp.com';
     let objectivesUrl = baseUrl + '/objectives/weekNumber/';
     let weekNumber = Moment().isoWeek();
@@ -49,17 +49,18 @@ export default class Objectives extends React.Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'x-access-token': this.state.token,
-        Authorization: 'Bearer ' + this.state.token,
+        'x-access-token': token,
+        Authorization: 'Bearer ' + token,
       },
     })
       .then(response => {
         return response.json();
       })
       .then(responseJson => {
-        if (responseJson.success && responseJson.data.length > 0) {
-          this.setState({collapsedWeekly: true});
-        }
+        // if (responseJson.success && responseJson.data.length > 0) {
+        //   this.setState({collapsedWeekly: true});
+        // }
+        //console.log(responseJson);
         responseJson.data.map(object => {
           let obj = {
             title: object.title,
@@ -76,8 +77,10 @@ export default class Objectives extends React.Component {
 
   componentDidMount() {
     _retrieveData('user').then(user => this.setState({user: user}));
-    _retrieveData('token').then(token => this.setState({token: token}));
-    this.fetchNewWeeklyObjectives();
+    _retrieveData('token').then(token => {
+      this.setState({token: token});
+      this.fetchNewWeeklyObjectives(token);
+    });
   }
 
   createObjective() {
@@ -161,7 +164,7 @@ export default class Objectives extends React.Component {
   };
 
   render() {
-    console.log(this.state.weeklyObjectives);
+    //console.log(this.state.weeklyObjectives);
     return (
       <View
         style={{
