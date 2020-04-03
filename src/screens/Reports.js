@@ -48,17 +48,16 @@ export default class Reports extends React.Component {
     };
   }
 
-  componentDidMount() {
+  getReports = () => {
+    //console.log('getting reports');
     let baseUrl = 'https://welove-intranet-backend.herokuapp.com';
     let userUrl = baseUrl + '/contas/id/';
-
-    _retrieveData('user').then(user => this.setState({user: user}));
-    _retrieveData('token').then(token => this.setState({token: token}));
 
     let now = Moment();
     let year = now.get('year');
     let month = now.get('month') + 1;
     let day = now.get('date');
+    //let reportsArray = [];
 
     fetch(
       baseUrl + '/reportsteam/year/' + year + '/month/' + month + '/day/' + day,
@@ -88,15 +87,39 @@ export default class Reports extends React.Component {
                         id: r._id,
                         createdAt: r.createdAt,
                       };
-                      this.setState(prevState => ({
-                        dayreports: [...prevState.dayreports, reportItem],
-                      }));
+                      //reportsArray.push(reportItem);
+                      //console.log('report array inside map: ' + JSON.stringify(reportsArray));
+                      if (this.state.dayreports.length > 0) {
+                        if (this.state.dayreports.filter(e => e.id === r._id).length > 0) {
+                          console.log('already in the array');
+                        } else {
+                          this.setState(prevState => ({
+                            dayreports: [...prevState.dayreports, reportItem],
+                          }));
+                        }
+                      } else {
+                        this.setState(prevState => ({
+                          dayreports: [...prevState.dayreports, reportItem],
+                        }));
+                      }
                     }
                   });
               });
+
+              // Promise.all(mapreports).then(res => {
+              //   console.log('reports array: ' + res);
+              //   this.setState({dayreports: res});
+              // });
             });
         });
       });
+  };
+
+  componentDidMount() {
+    _retrieveData('user').then(user => this.setState({user: user}));
+    _retrieveData('token').then(token => this.setState({token: token}));
+
+    this.getReports();
   }
 
   reportTeamDialogShow = visible => {
@@ -139,7 +162,7 @@ export default class Reports extends React.Component {
         'Content-Type': 'application/json',
         'x-access-token': this.state.token,
       },
-      body: report,
+      body: JSON.stringify(report),
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -174,24 +197,28 @@ export default class Reports extends React.Component {
               openModal={this.state.openModalWeekly}
               closeModal={this.setModalWeekly}
               reportDialogShow={this.reportDialogShow}
+              getReports={this.getReports}
             />
 
             <Eod
               openModal={this.state.openModalEod}
               closeModal={this.setModalEod}
               reportDialogShow={this.reportDialogShow}
+              getReports={this.getReports}
             />
 
             <Status
               openModal={this.state.openModalStatus}
               closeModal={this.setModalStatus}
               reportDialogShow={this.reportDialogShow}
+              getReports={this.getReports}
             />
 
             <Dayplan
               openModal={this.state.openModalDayplan}
               closeModal={this.setModalDayplan}
               reportDialogShow={this.reportDialogShow}
+              getReports={this.getReports}
             />
 
             <View style={styles.body}>

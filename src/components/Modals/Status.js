@@ -19,7 +19,12 @@ import {styles} from './styles';
 
 const initHTML = '';
 
-export default function Status({openModal, closeModal, reportDialogShow}) {
+export default function Status({
+  openModal,
+  closeModal,
+  reportDialogShow,
+  getReports,
+}) {
   const [selectedDateId, setSelectedDateId] = useState();
   const [selected, setSelected] = useState(false);
   const [dates, setDates] = useState([]);
@@ -53,7 +58,7 @@ export default function Status({openModal, closeModal, reportDialogShow}) {
       status: status,
       type: type,
     };
-    CreateReport(report);
+    CreateReport(report, getReports);
     closeModal(!openModal);
     reportDialogShow(false);
   };
