@@ -12,6 +12,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import Home from './src/screens/Home';
 import Timeline from './src/screens/Timeline';
+import TimelineNew from './src/screens/TimelineNew';
 import Reports from './src/screens/Reports';
 import Intelligence from './src/screens/Intelligence';
 import Objectives from './src/screens/Objectives';
@@ -27,7 +28,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" headerMode="none">
         <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Timeline" component={Timeline} />
+        <Stack.Screen name="Timeline" component={TimelineNew} />
         <Stack.Screen name="Reports" component={Reports} />
         <Stack.Screen name="Intelligence" component={Intelligence} />
         <Stack.Screen name="Objectives" component={Objectives} />
