@@ -68,6 +68,7 @@ export default function Eod({
   const that = this;
   return (
     <Modal
+      animationType="slide"
       isVisible={openModal}
       onRequestClose={() => {
         closeModal(!openModal);

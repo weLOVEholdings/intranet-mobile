@@ -2,6 +2,7 @@ import React from 'react';
 import {
   ActivityIndicator,
   View,
+  Dimensions,
   FlatList,
   Image,
   Platform,
@@ -22,20 +23,21 @@ export default class TimeLine extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      timeline: [],
       users: [],
       reports: [],
       token: '',
       isLoading: false,
+      lazyLoading: false,
+      refreshing: false,
+      limit: 15,
+      lastVisible: 0,
     };
   }
 
   componentDidMount() {
     let baseUrl = 'https://welove-intranet-backend.herokuapp.com';
     let timelineUrl = '/timelineentry/all';
-    let userUrl = baseUrl + '/contas/id/';
-    let reportUrl = baseUrl + '/reports/id/';
-    let objectivesUrl = baseUrl + '/objectives/id/';
-    let userId;
 
     _retrieveData('token').then(token =>
       this.setState({token: token, isLoading: true}),
@@ -46,88 +48,7 @@ export default class TimeLine extends React.Component {
         let reports = responseJson.data.sort(function(a, b) {
           return new Date(b.createdAt) - new Date(a.createdAt);
         });
-        // let sortedReports = reports.sort(function(a, b) {
-        //   return new Date(b.date) - new Date(a.date);
-        // });
-        reports.map(report => {
-          fetch(userUrl + report.userId)
-            .then(response => response.json())
-            .then(responseJsonUser => {
-              if (responseJsonUser.success === true) {
-                let user = responseJsonUser.data;
-                userId = user._id;
-                if (
-                  this.state.users.length > 0 &&
-                  this.state.users.filter(function(e) {
-                    return e._id === userId;
-                  }).length === 0
-                ) {
-                  this.setState(prevState => ({
-                    users: [
-                      ...prevState.users,
-                      {user_id: userId, details: user},
-                    ],
-                  }));
-                }
-
-                if (
-                  report.type === 'dayplan' ||
-                  report.type === 'eod' ||
-                  report.type === 'report' ||
-                  report.type === 'status'
-                ) {
-                  fetch(reportUrl + report.modelId, {
-                    headers: {
-                      'x-access-token': this.state.token,
-                    },
-                  })
-                    .then(response => response.json())
-                    .then(responseJsonReport => {
-                      if (responseJsonReport.success === true) {
-                        let reportItem = {
-                          user: responseJsonUser.data,
-                          report: responseJsonReport.data,
-                          date: report.createdAt,
-                          id: report._id,
-                        };
-                        this.setState(prevState => ({
-                          reports: [...prevState.reports, reportItem],
-                          isLoading: false,
-                        }));
-                      }
-                    })
-                    .catch(error => {
-                      console.error(error);
-                    });
-                } else {
-                  fetch(objectivesUrl + report.modelId, {
-                    headers: {
-                      'x-access-token': this.state.token,
-                    },
-                  })
-                    .then(response => response.json())
-                    .then(responseJsonObjective => {
-                      if (responseJsonObjective.success === true) {
-                        let reportItem = {
-                          user: responseJsonUser.data,
-                          report: responseJsonObjective.data,
-                          date: report.createdAt,
-                          id: report._id,
-                        };
-                        this.setState(prevState => ({
-                          reports: [...prevState.reports, reportItem],
-                          isLoading: false,
-                        }));
-                      }
-                    })
-                    .catch(error => {
-                      console.error(error);
-                    });
-                }
-              }
-            });
-        });
-
+        this.setState({timelineReports: reports}, this.retrieveData);
         // store reports to storage
         _storeData('timelineReports', JSON.stringify(this.state.reports));
       })
@@ -135,6 +56,144 @@ export default class TimeLine extends React.Component {
         console.error(error);
       });
   }
+
+  getReportDetails = reports => {
+    let baseUrl = 'https://welove-intranet-backend.herokuapp.com';
+    let userUrl = baseUrl + '/contas/id/';
+    let reportUrl = baseUrl + '/reports/id/';
+    let objectivesUrl = baseUrl + '/objectives/id/';
+    let userId;
+
+    reports.map(report => {
+      fetch(userUrl + report.userId)
+        .then(response => response.json())
+        .then(responseJsonUser => {
+          if (responseJsonUser.success === true) {
+            let user = responseJsonUser.data;
+            userId = user._id;
+            if (
+              this.state.users.length > 0 &&
+              this.state.users.filter(function(e) {
+                return e._id === userId;
+              }).length === 0
+            ) {
+              this.setState(prevState => ({
+                users: [
+                  ...prevState.users,
+                  {user_id: userId, details: user},
+                ],
+              }));
+            }
+
+            if (
+              report.type === 'dayplan' ||
+              report.type === 'eod' ||
+              report.type === 'report' ||
+              report.type === 'status'
+            ) {
+              fetch(reportUrl + report.modelId, {
+                headers: {
+                  'x-access-token': this.state.token,
+                },
+              })
+                .then(response => response.json())
+                .then(responseJsonReport => {
+                  if (responseJsonReport.success === true) {
+                    let reportItem = {
+                      user: responseJsonUser.data,
+                      report: responseJsonReport.data,
+                      date: report.createdAt,
+                      id: report._id,
+                    };
+                    this.setState(prevState => ({
+                      reports: [...prevState.reports, reportItem],
+                      isLoading: false,
+                    }));
+                  }
+                })
+                .catch(error => {
+                  console.error(error);
+                });
+            } else {
+              fetch(objectivesUrl + report.modelId, {
+                headers: {
+                  'x-access-token': this.state.token,
+                },
+              })
+                .then(response => response.json())
+                .then(responseJsonObjective => {
+                  if (responseJsonObjective.success === true) {
+                    let reportItem = {
+                      user: responseJsonUser.data,
+                      report: responseJsonObjective.data,
+                      date: report.createdAt,
+                      id: report._id,
+                    };
+                    this.setState(prevState => ({
+                      reports: [...prevState.reports, reportItem],
+                      isLoading: false,
+                    }));
+                  }
+                })
+                .catch(error => {
+                  console.error(error);
+                });
+            }
+          }
+        });
+    });
+  };
+
+  retrieveData = async () => {
+    console.log('retrieving first sets of data');
+    try {
+      this.setState({
+        lazyLoading: true,
+      });
+
+      let start = this.state.lastVisible;
+      let end = this.state.lastVisible + this.state.limit;
+      let firstReports = this.state.timelineReports.slice(start, end);
+
+      console.log('firstReports: ' + firstReports);
+
+      this.getReportDetails(firstReports);
+
+      this.setState({
+        lastVisible: end,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  retrieveMore = async () => {
+    console.log('retrieving more timeline data');
+    try {
+      this.setState({
+        lazyLoading: true,
+      });
+
+      let start = this.state.lastVisible;
+      let end = this.state.lastVisible + this.state.limit;
+      let firstReports = this.state.timeline.slice(start, end);
+
+      this.getReportDetails(firstReports);
+
+      this.setState({
+        lastVisible: end,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+    console.log('scrolling');
+    const paddingToBottom = 90; //Distance from the bottom you want it to trigger.
+    let isClose = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom
+    return isClose;
+  };
 
   typeFormatter = type => {
     if (type === 'dayplan') {
@@ -150,8 +209,22 @@ export default class TimeLine extends React.Component {
     }
   };
 
+  renderFooter = () => {
+    try {
+      if (this.state.lazyLoading) {
+        return <ActivityIndicator />;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   render() {
     let {reports} = this.state;
+    const {height} = Dimensions.get('window');
+
     return (
       <View style={{
         paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
@@ -266,6 +339,16 @@ export default class TimeLine extends React.Component {
                         </View>
                       </View>
                     )}
+                    ListFooterComponent={this.renderFooter}
+                    onEndReached={() => this.retrieveMore()}
+                    onEndReachedThreshold={0}
+                    refreshing={this.state.refreshing}
+                    // onScroll={({nativeEvent}) => {
+                    //   if (isCloseToBottom(nativeEvent)) {
+                    //     this.retrieveMore();
+                    //   }
+                    // }}
+                    // scrollEventThrottle={1000}
                   />
                 )}
               </View>

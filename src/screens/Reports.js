@@ -260,6 +260,7 @@ export default class Reports extends React.Component {
                       </TouchableOpacity>
 
                       <Modal
+                        animationType="slide"
                         isVisible={this.state.reportDialog}
                         onRequestClose={() => {
                           this.reportDialogShow(!this.state.reportDialog);
@@ -360,6 +361,7 @@ export default class Reports extends React.Component {
                         </Text>
                       </TouchableOpacity>
                       <Modal
+                        animationType="slide"
                         isVisible={this.state.reportTeamDialog}
                         onRequestClose={() => {
                           this.reportTeamDialogShow(

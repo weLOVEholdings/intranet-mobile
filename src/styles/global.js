@@ -81,6 +81,10 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: Colors.lighter,
     height: '100%',
   },
+  scrollViewTL: {
+    backgroundColor: Colors.white,
+    height: '100%',
+  },
   engine: {
     position: 'absolute',
     right: 0,

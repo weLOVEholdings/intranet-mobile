@@ -66,6 +66,7 @@ export default function Weekly({
   const that = this;
   return (
     <Modal
+      animationType="slide"
       isVisible={openModal}
       onRequestClose={() => {
         closeModal(!openModal);
